@@ -5,7 +5,7 @@
 
 export default function Hero() {
     return (
-        <section className="bg-white px-6 py-24 text-center">
+        <section id="hero" className="bg-white px-6 py-24 text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 max-w-4xl mx-auto">
                 Tu WhatsApp puede atender clientes y recibir citas automáticamente
             </h1>

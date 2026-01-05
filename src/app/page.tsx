@@ -4,13 +4,12 @@
  * No contiene lógica ni markup complejo.
  */
 
-import Demos from "@/components/home/Demos";
 import Hero from "@/components/home/Hero";
-import PriceCard from "@/components/prices/PriceCard";
 import Problems from "@/components/Problems";
 import Solution from "@/components/Solution";
-
-
+import Demos from "@/components/home/Demos";
+import Pricing from "@/components/home/Pricing";
+import FinalCTA from "@/components/home/FinalCTA";
 
 export default function HomePage() {
   return (
@@ -19,8 +18,8 @@ export default function HomePage() {
       <Problems />
       <Solution />
       <Demos />
-      {/*       <PriceCard />
-      <FinalCTA /> */}
+      <Pricing />
+      <FinalCTA />
     </main>
   );
 }
