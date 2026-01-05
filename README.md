@@ -1,36 +1,163 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Landing & Automatización para Negocios
 
-## Getting Started
+Sistema web diseñado para vender **landings pages** y **automatizaciones con WhatsApp**
+a pequeñas empresas (peluquerías, centros de estética, consultorios, etc.).
 
-First, run the development server:
+El proyecto demuestra diferentes niveles de madurez digital:
+desde una landing simple hasta un sistema automatizado con WhatsApp e IA.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🎯 Objetivo del proyecto
+
+- Vender landings profesionales como producto de entrada
+- Ofrecer automatización con WhatsApp como producto principal (mensualidad)
+- Demostrar valor real mediante demos funcionales
+- Mantener costos bajos y arquitectura simple
+
+---
+
+## 🧠 Enfoque del producto
+
+No se vende tecnología.
+Se vende **más clientes + menos tiempo respondiendo WhatsApp**.
+
+---
+
+## 🧱 Stack tecnológico
+
+- **Frontend:** Next.js (App Router, `src/app`)
+- **Lenguaje:** TypeScript
+- **Estilos:** Tailwind CSS
+- **Backend:** API Routes de Next.js
+- **Base de datos:** Supabase (solo para demos avanzadas)
+- **Automatización:** n8n
+- **WhatsApp:** Baileys (API externa reutilizada)
+- **IA:** Endpoint propio en Next.js (optimizado para bajo costo)
+
+---
+
+## 🧩 Demos incluidas
+
+### 1️⃣ Landing Simple
+Producto de entrada ($300.000 COP)
+
+- Landing one-page
+- Servicios
+- Formulario simple
+- Envío directo a WhatsApp
+
+Ruta:
+
+/demo/landing-simple
+
+
+---
+
+### 2️⃣ Consulta de Servicios
+Reduce preguntas repetidas.
+
+- Servicios
+- Precios
+- CTA a WhatsApp
+
+Ruta:
+
+
+/demo/servicios
+
+
+---
+
+### 3️⃣ Reservas por Web
+Demostración de automatización real.
+
+- Formulario de reservas
+- Supabase (guardar citas)
+- n8n (orquestación)
+- Confirmación por WhatsApp
+
+Ruta:
+
+
+/demo/reservas
+
+
+---
+
+### 4️⃣ WhatsApp Automático con IA
+Atención 24/7 simulando un negocio real.
+
+- Respuestas automáticas
+- Consulta de servicios
+- Inicio de agendamiento
+- IA controlada vía API Route
+
+Acceso:
+Botón desde la Home
+
+---
+
+## 📁 Estructura del proyecto
+
+
+
+src/
+├─ app/
+│ ├─ page.tsx # Home (marketing)
+│ ├─ demo/
+│ │ ├─ landing-simple/
+│ │ ├─ servicios/
+│ │ └─ reservas/
+│ ├─ api/
+│ │ ├─ ai/
+│ │ ├─ reservations/
+│ └─ admin/ # Futuro
+│
+├─ lib/
+│ ├─ supabase.ts
+│ ├─ whatsapp.ts
+│
+├─ services/ # Integraciones externas
+├─ types/
+
+
 ```
+🔄 Flujo general del sistema
+Usuario → Landing → Acción (formulario / demo)
+        → API Next.js
+        → Supabase (si aplica)
+        → n8n
+        → WhatsApp (Baileys)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🧠 Reglas del proyecto
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+El código está comentado en español
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Nombres de variables y funciones en inglés
 
-## Learn More
+La lógica vive en API / lib, no en las páginas
 
-To learn more about Next.js, take a look at the following resources:
+La IA solo responde usando contexto controlado
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+n8n es orquestador, no cerebro
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Supabase se usa solo donde aporta valor
 
-## Deploy on Vercel
+Ver archivo:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+.antigravity-rules.md
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+🚧 Estado del proyecto
+
+ Home que vende
+
+ Demo Landing Simple
+
+ Demo Servicios
+
+ Demo Reservas
+
+ WhatsApp con IA
+
+ Panel Admin (futuro)
