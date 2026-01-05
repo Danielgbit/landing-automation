@@ -1,14 +1,26 @@
 /**
- * Página principal (HOME)
- * Objetivo: vender el sistema y dirigir a las demos
+ * HOME PAGE
+ * Página de composición.
+ * No contiene lógica ni markup complejo.
  */
+
+import Demos from "@/components/home/Demos";
+import Hero from "@/components/home/Hero";
+import PriceCard from "@/components/prices/PriceCard";
+import Problems from "@/components/Problems";
+import Solution from "@/components/Solution";
+
+
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <h1 className="text-3xl font-bold">
-        Automatización para negocios
-      </h1>
+    <main className="flex flex-col">
+      <Hero />
+      <Problems />
+      <Solution />
+      <Demos />
+      {/*       <PriceCard />
+      <FinalCTA /> */}
     </main>
   );
 }
