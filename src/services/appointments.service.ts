@@ -1,3 +1,5 @@
+//src/services/appointments.service.ts
+
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { Service } from './services.service'
 
@@ -14,6 +16,8 @@ function getDemoAppointmentDate() {
     return date
 }
 
+
+// DEMO 4 – WhatsApp IA (simulada)
 export async function createDemoAppointment(
     phone: string,
     service: Service
@@ -47,3 +51,43 @@ export async function createDemoAppointment(
         })
     }
 }
+
+// DEMO 3 – Web (determinístico)
+type CreateWebAppointmentInput = {
+    phone: string
+    serviceId: string
+    date: string // YYYY-MM-DD
+    time: string // HH:mm
+}
+
+export async function createWebAppointment(
+    input: CreateWebAppointmentInput
+) {
+    const startAt = new Date(`${input.date}T${input.time}:00`)
+    const endAt = new Date(startAt.getTime() + 60 * 60000) // luego mejoras duración
+
+    const { data, error } = await supabaseAdmin
+        .from('appointments')
+        .insert({
+            client_phone: input.phone,
+            service_id: input.serviceId,
+            start_at: startAt.toISOString(),
+            end_at: endAt.toISOString(),
+            status: 'confirmed',
+            source: 'web'
+        })
+        .select()
+        .single()
+
+    if (error) {
+        console.error('❌ Error creando cita (web)', error)
+        throw new Error('Error creando la cita')
+    }
+
+    return {
+        id: data.id,
+        date: input.date,
+        time: input.time
+    }
+}
+

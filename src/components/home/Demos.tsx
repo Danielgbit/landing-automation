@@ -61,7 +61,7 @@ export default function Demos() {
                             "Consulta de servicios",
                             "Inicio de agendamiento"
                         ]}
-                        href="https://wa.me/573000000000"
+                        href="/demo/whatsapp-ia"
                         external
                     />
                 </div>

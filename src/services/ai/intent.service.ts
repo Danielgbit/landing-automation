@@ -1,3 +1,4 @@
+//src/services/ai/intent.service.ts
 import { groq } from '@/lib/groq'
 
 export type Intent =
@@ -29,12 +30,17 @@ Responde SOLO en JSON:
 `
 
     const completion = await groq.chat.completions.create({
-        model: 'llama3-8b-8192',
+        // ✅ MODELO ACTUAL Y SOPORTADO
+        model: 'llama-3.1-8b-instant',
         temperature: 0,
         messages: [{ role: 'user', content: prompt }]
     })
 
-    return JSON.parse(
-        completion.choices[0].message.content || '{}'
-    )
+    const content = completion.choices[0]?.message?.content
+
+    if (!content) {
+        throw new Error('Respuesta vacía de IA')
+    }
+
+    return JSON.parse(content)
 }
