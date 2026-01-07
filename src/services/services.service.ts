@@ -1,4 +1,5 @@
 //src/services/services.service.ts
+
 import { supabaseAdmin } from '@/lib/supabase-admin'
 
 export type Service = {

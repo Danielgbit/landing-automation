@@ -52,29 +52,26 @@ export async function createDemoAppointment(
     }
 }
 
+
 // DEMO 3 – Web (determinístico)
-type CreateWebAppointmentInput = {
+export async function createWebAppointment(input: {
     phone: string
     serviceId: string
-    date: string // YYYY-MM-DD
-    time: string // HH:mm
-}
-
-export async function createWebAppointment(
-    input: CreateWebAppointmentInput
-) {
+    date: string
+    time: string
+}) {
     const startAt = new Date(`${input.date}T${input.time}:00`)
-    const endAt = new Date(startAt.getTime() + 60 * 60000) // luego mejoras duración
+
+    const endAt = new Date(startAt.getTime() + 60 * 60000)
 
     const { data, error } = await supabaseAdmin
         .from('appointments')
         .insert({
-            client_phone: input.phone,
+            phone: input.phone, // ✅ CORRECTO
             service_id: input.serviceId,
             start_at: startAt.toISOString(),
             end_at: endAt.toISOString(),
-            status: 'confirmed',
-            source: 'web'
+            status: 'confirmed'
         })
         .select()
         .single()
@@ -90,4 +87,3 @@ export async function createWebAppointment(
         time: input.time
     }
 }
-

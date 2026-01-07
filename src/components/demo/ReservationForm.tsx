@@ -1,6 +1,9 @@
+// src/components/demo/ReservationForm.tsx
 'use client'
 
 import { useState } from 'react'
+import { useActiveServices } from '@/hooks/services/useActiveServices'
+import { Service } from '@/services/services.service'
 
 type Props = {
     onSubmit: (data: {
@@ -20,9 +23,24 @@ export default function ReservationForm({ onSubmit, loading }: Props) {
     const [time, setTime] = useState('')
     const [notifyWhatsapp, setNotifyWhatsapp] = useState(true)
 
+    const {
+        services,
+        loading: loadingServices,
+        error: servicesError
+    } = useActiveServices()
+
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
-        onSubmit({ phone, serviceId, date, time, notifyWhatsapp })
+
+        if (!serviceId) return
+
+        onSubmit({
+            phone,
+            serviceId,
+            date,
+            time,
+            notifyWhatsapp
+        })
     }
 
     return (
@@ -36,7 +54,7 @@ export default function ReservationForm({ onSubmit, loading }: Props) {
                     Reserva tu cita
                 </h1>
                 <p className="mt-1 text-sm text-gray-500">
-                    Sin llamadas, confirmación inmediata por WhatsApp
+                    Sin llamadas · Confirmación automática por WhatsApp
                 </p>
             </div>
 
@@ -45,23 +63,36 @@ export default function ReservationForm({ onSubmit, loading }: Props) {
                 <label className="mb-1 block text-sm font-medium">
                     Servicio
                 </label>
+
                 <select
-                    className="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
+                    className="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black disabled:bg-gray-100"
                     value={serviceId}
                     onChange={(e) => setServiceId(e.target.value)}
                     required
+                    disabled={loadingServices || !!servicesError}
                 >
-                    <option value="">Selecciona un servicio</option>
-                    <option value="uuid-service-1">
-                        Corte de cabello
+                    <option value="">
+                        {loadingServices
+                            ? 'Cargando servicios...'
+                            : 'Selecciona un servicio'}
                     </option>
-                    <option value="uuid-service-2">
-                        Masaje relajante
-                    </option>
-                    <option value="uuid-service-3">
-                        Manicure
-                    </option>
+
+                    {services.map((service: Service) => (
+                        <option
+                            key={service.id}
+                            value={service.id}
+                        >
+                            {service.name} · {service.duration_minutes} min · $
+                            {service.price}
+                        </option>
+                    ))}
                 </select>
+
+                {servicesError && (
+                    <p className="mt-1 text-xs text-red-500">
+                        No se pudieron cargar los servicios
+                    </p>
+                )}
             </div>
 
             {/* Fecha y hora */}
@@ -108,6 +139,7 @@ export default function ReservationForm({ onSubmit, loading }: Props) {
                 />
             </div>
 
+            {/* Confirmación */}
             <label className="mb-6 flex items-center gap-2 text-sm text-gray-600">
                 <input
                     type="checkbox"
@@ -119,9 +151,14 @@ export default function ReservationForm({ onSubmit, loading }: Props) {
                 Enviarme confirmación por WhatsApp
             </label>
 
+            {/* CTA */}
             <button
                 type="submit"
-                disabled={loading}
+                disabled={
+                    loading ||
+                    loadingServices ||
+                    !serviceId
+                }
                 className="w-full rounded-xl bg-black py-3 text-white transition hover:opacity-90 disabled:opacity-50"
             >
                 {loading ? 'Agendando...' : 'Confirmar cita'}

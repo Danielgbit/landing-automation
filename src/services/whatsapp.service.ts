@@ -1,9 +1,10 @@
+// src/services/whatsapp.service.ts
+
 import axios from 'axios'
 
 type SendWhatsAppInput = {
     phone: string
     message: string
-    source: 'web' | 'whatsapp'
 }
 
 export default async function sendWhatsAppMessage(
@@ -17,7 +18,6 @@ export default async function sendWhatsAppMessage(
         {
             phone: input.phone,
             message: input.message,
-            source: input.source
         }
     )
 }
