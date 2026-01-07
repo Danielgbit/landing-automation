@@ -27,7 +27,7 @@ export default function Demos() {
                             "Formulario simple",
                             "Mensaje directo a WhatsApp"
                         ]}
-                        href="/demo/landing-simple"
+                        href="/demo/landing"
                     />
 
                     <DemoCard
@@ -62,7 +62,6 @@ export default function Demos() {
                             "Inicio de agendamiento"
                         ]}
                         href="/demo/whatsapp-ia"
-                        external
                     />
                 </div>
             </div>

@@ -82,12 +82,19 @@ export async function POST(req: NextRequest) {
 
                 const message = `
 Hola 😊  
-Tu cita quedó confirmada:
+¡Tu cita quedó confirmada con éxito!
 
+✨ Detalles de tu reserva:
 🧾 Servicio: ${service.name}
 📅 Fecha: ${appointment.date}
 ⏰ Hora: ${appointment.time}
-                `.trim()
+
+Te esperamos.
+Si necesitas reprogramar o cancelar, solo responde a este mensaje.
+
+Gracias por confiar en nosotros 💙
+`.trim()
+
 
                 console.log(
                     '🟠 [WEB_APPOINTMENT][WHATSAPP] Sending message',

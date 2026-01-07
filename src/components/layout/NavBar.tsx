@@ -11,7 +11,7 @@ export default function Navbar() {
 
                 {/* LOGO */}
                 <a href="/" className="font-bold text-gray-900">
-                    AutomatizaTuWhatsApp
+                    FOCUSED STUDIO
                 </a>
 
                 {/* LINKS (DESKTOP) */}
