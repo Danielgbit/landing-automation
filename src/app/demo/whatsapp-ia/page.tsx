@@ -1,13 +1,7 @@
 /**
  * DEMO WHATSAPP CON IA
- *
- * Esta página es una "bridge page":
- * - Prepara al usuario antes de ir a WhatsApp
- * - Explica qué puede hacer el asistente
- * - Maximiza el efecto WOW de la automatización
- *
- * NO explica tecnología.
- * SOLO beneficios y ejemplos reales.
+ * Página puente hacia la experiencia real
+ * Objetivo: activar la demo con expectativa correcta
  */
 
 const WHATSAPP_DEMO_URL =
@@ -15,94 +9,110 @@ const WHATSAPP_DEMO_URL =
 
 export default function WhatsAppIADemoPage() {
     return (
-        <main className="min-h-screen bg-white px-6 py-24">
-            <div className="max-w-3xl mx-auto text-center">
-
+        <main className="min-h-screen bg-brand-light px-6 py-28">
+            <div className="mx-auto max-w-3xl text-center">
                 {/* ===================== */}
                 {/* HERO */}
                 {/* ===================== */}
-                <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
-                    WhatsApp que responde clientes automáticamente
+                <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-brand-primary">
+                    Un asistente por WhatsApp que atiende clientes automáticamente
                 </h1>
 
-                <p className="mt-6 text-lg text-gray-600">
-                    Prueba cómo un asistente virtual atiende consultas reales,
-                    responde preguntas frecuentes y ayuda a agendar citas 24/7.
+                <p className="mt-6 text-sm md:text-base text-brand-muted max-w-2xl mx-auto">
+                    Responde consultas reales, informa servicios y guía el agendamiento
+                    como lo haría un negocio organizado, incluso fuera de horario.
                 </p>
 
                 {/* ===================== */}
                 {/* QUÉ PUEDE HACER */}
                 {/* ===================== */}
-                <section className="mt-16 text-left">
-                    <h2 className="text-2xl font-bold text-gray-900 text-center">
+                <section className="mt-20">
+                    <h2 className="text-lg font-semibold text-brand-primary">
                         ¿Qué puede hacer este asistente?
                     </h2>
 
-                    <ul className="mt-8 space-y-3 text-gray-700">
-                        <li>✅ Responder precios y servicios</li>
-                        <li>✅ Informar horarios de atención</li>
-                        <li>✅ Atender clientes fuera de horario</li>
-                        <li>✅ Iniciar el proceso de agendamiento</li>
-                        <li>✅ Responder automáticamente, sin que tú estés conectado</li>
+                    <ul className="mt-10 grid gap-4 text-left">
+                        {[
+                            "Responder precios y servicios",
+                            "Informar horarios de atención",
+                            "Atender clientes fuera de horario",
+                            "Guiar el inicio de una cita",
+                            "Responder automáticamente sin que estés conectado",
+                        ].map((item) => (
+                            <li
+                                key={item}
+                                className="bg-brand-white border border-gray-200 rounded-2xl px-6 py-4 text-sm text-brand-muted shadow-soft"
+                            >
+                                {item}
+                            </li>
+                        ))}
                     </ul>
                 </section>
 
                 {/* ===================== */}
-                {/* EJEMPLOS DE MENSAJES */}
+                {/* EJEMPLOS */}
                 {/* ===================== */}
-                <section className="mt-16">
-                    <h2 className="text-2xl font-bold text-gray-900">
-                        Prueba escribiendo cosas como:
+                <section className="mt-24">
+                    <h2 className="text-lg font-semibold text-brand-primary">
+                        Prueba escribiendo mensajes como:
                     </h2>
 
-                    <div className="mt-8 grid gap-4 md:grid-cols-2">
-                        <ExampleMessage text="¿Cuáles son los servicios?" />
-                        <ExampleMessage text="¿Cuánto cuesta una limpieza facial?" />
-                        <ExampleMessage text="¿Atienden hoy?" />
-                        <ExampleMessage text="Quiero agendar una cita" />
+                    <div className="mt-10 grid gap-4 md:grid-cols-2">
+                        {[
+                            "¿Cuáles son los servicios?",
+                            "¿Cuánto cuesta una limpieza facial?",
+                            "¿Atienden hoy?",
+                            "Quiero agendar una cita",
+                        ].map((text) => (
+                            <ExampleMessage key={text} text={text} />
+                        ))}
                     </div>
 
-                    <p className="mt-6 text-sm text-gray-500">
-                        El asistente entiende mensajes naturales, como si hablaras con una persona.
+                    <p className="mt-6 text-xs text-brand-subtle">
+                        El asistente entiende lenguaje natural, como si hablaras con una persona.
                     </p>
                 </section>
 
                 {/* ===================== */}
-                {/* CTA PRINCIPAL */}
+                {/* CTA */}
                 {/* ===================== */}
-                <div className="mt-20">
+                <div className="mt-24">
                     <a
                         href={WHATSAPP_DEMO_URL}
                         target="_blank"
-                        className="inline-flex items-center justify-center rounded-lg bg-green-600 px-8 py-4 text-lg font-semibold text-white hover:bg-green-700 transition"
+                        rel="noopener noreferrer"
+                        className="
+              inline-flex items-center justify-center
+              rounded-xl
+              bg-accent
+              px-8 py-4
+              text-sm font-medium text-white
+              hover:bg-accent-hover
+              transition
+            "
                     >
-                        Probar WhatsApp automático
+                        Probar el asistente en WhatsApp
                     </a>
 
-                    <p className="mt-4 text-sm text-gray-500">
-                        Esto es una demo. El asistente responde automáticamente
+                    <p className="mt-4 text-xs text-brand-subtle max-w-sm mx-auto">
+                        Esta es una demo. El asistente responde automáticamente
                         como lo haría en un negocio real.
                     </p>
                 </div>
-
             </div>
         </main>
     );
 }
 
-/* ===================================================== */
-/* COMPONENTE AUXILIAR */
-/* ===================================================== */
-
 /**
  * ExampleMessage
- * Muestra ejemplos de mensajes que el usuario puede enviar al asistente
- * Ayuda a reducir fricción y mejorar la experiencia de prueba
+ * Mensaje sugerido para probar la demo
  */
+
 function ExampleMessage({ text }: { text: string }) {
     return (
-        <div className="rounded-lg border bg-gray-50 p-4 text-sm text-gray-700">
-            💬 {text}
+        <div className="bg-brand-white border border-gray-200 rounded-2xl px-4 py-3 text-sm text-brand-muted shadow-soft">
+            {text}
         </div>
     );
 }

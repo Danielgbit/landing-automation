@@ -8,18 +8,25 @@ import WhatsappPreview from '@/components/demo/WhatsappPreview'
 
 export default function LandingPage() {
     return (
-        <div className="min-h-screen bg-gray-50">
-            <FakeNavbar />
-
-            <main className="mx-auto max-w-3xl rounded-2xl mb-20 mt-20 px-4 pb-24 pt-20 text-center bg-gray-200">
-                {/* Hero */}
-                <h1 className="text-3xl font-semibold">
-                    Agenda tu servicio fácilmente
-                </h1>
-
-                <p className="mt-2 text-sm text-gray-500">
-                    Sin llamadas · Atención rápida por WhatsApp
-                </p>
+        <div className="min-h-screen bg-brand-light">
+            <main className="
+        mx-auto
+        max-w-3xl
+        rounded-2xl
+        bg-brand-white
+        px-6
+        py-20
+        shadow-card
+      ">
+                {/* HERO */}
+                <header className="text-center">
+                    <h1 className="text-2xl md:text-3xl font-semibold text-brand-primary">
+                        Agenda tu servicio fácilmente
+                    </h1>
+                    <p className="mt-3 text-sm text-brand-muted">
+                        Sin llamadas · Atención rápida por WhatsApp
+                    </p>
+                </header>
 
                 <Benefits />
                 <SimpleServiceList />

@@ -1,7 +1,7 @@
 /**
  * Pricing
  * Sección de precios de la Home
- * Se encarga de renderizar los planes usando data externa
+ * Objetivo: claridad + guía de decisión
  */
 
 import PriceCard from "@/components/prices/PriceCard";
@@ -9,17 +9,20 @@ import { pricingPlans } from "@/data/pricing";
 
 export default function Pricing() {
     return (
-        <section className="bg-white px-6 py-24">
-            <div className="max-w-5xl mx-auto text-center">
-                <h2 className="text-3xl font-bold text-gray-900">
+        <section className="bg-brand-light px-6 py-24">
+            <div className="mx-auto max-w-5xl text-center">
+                {/* Título */}
+                <h2 className="text-xl md:text-2xl font-semibold text-brand-primary">
                     Precios claros y sin sorpresas
                 </h2>
 
-                <p className="mt-4 text-gray-600">
-                    Empieza simple y automatiza cuando lo necesites.
+                {/* Subtítulo */}
+                <p className="mt-4 text-sm text-brand-muted">
+                    Empieza con lo esencial y agrega automatización cuando lo necesites.
                 </p>
 
-                <div className="mt-12 grid gap-8 md:grid-cols-3">
+                {/* Planes */}
+                <div className="mt-16 grid gap-8 md:grid-cols-3">
                     {pricingPlans.map((plan) => (
                         <PriceCard
                             key={plan.id}
@@ -34,4 +37,4 @@ export default function Pricing() {
             </div>
         </section>
     );
-}   
+}

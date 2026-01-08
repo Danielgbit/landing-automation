@@ -7,39 +7,44 @@ import DemoCard from "@/components/shared/DemoCard";
 
 export default function Demos() {
     return (
-        <section id="demos" className="bg-gray-50 px-6 py-24">
-            <div className="max-w-6xl mx-auto">
-                <h2 className="text-3xl font-bold text-center text-gray-900">
-                    Prueba cómo funcionaría en tu negocio
+        <section id="demos" className="bg-brand-light px-6 py-24">
+            <div className="mx-auto max-w-6xl">
+                {/* Título */}
+                <h2 className="text-xl md:text-2xl font-semibold text-center text-brand-primary">
+                    Mira cómo funcionaría en tu negocio
                 </h2>
 
-                <p className="mt-4 text-center text-gray-600">
-                    Empieza simple y automatiza cuando lo necesites.
+                {/* Subtítulo */}
+                <p className="mt-4 text-center text-sm text-brand-muted">
+                    Empieza con lo básico y activa automatización avanzada cuando lo necesites.
                 </p>
 
-                <div className="mt-14 grid gap-8 md:grid-cols-2">
+                {/* Grid de demos */}
+                <div className="mt-16 grid gap-8 md:grid-cols-2">
                     <DemoCard
                         title="Landing profesional"
-                        description="Una página clara para que te escriban por WhatsApp."
+                        description="Convierte visitas en mensajes de WhatsApp."
                         features={[
-                            "Página one-page",
-                            "Servicios",
+                            "Página one-page clara",
+                            "Servicios visibles",
                             "Formulario simple",
-                            "Mensaje directo a WhatsApp"
+                            "Mensaje directo a WhatsApp",
                         ]}
                         href="/demo/landing"
+                        level="base"
                     />
 
                     <DemoCard
-                        title="Servicios y precios claros"
-                        description="Reduce preguntas repetidas y gana tiempo."
+                        title="Servicios y precios"
+                        description="Reduce preguntas repetidas desde el primer contacto."
                         features={[
                             "Listado de servicios",
                             "Precios visibles",
-                            "Duración",
-                            "CTA a WhatsApp"
+                            "Duración clara",
+                            "CTA a WhatsApp",
                         ]}
                         href="/demo/servicios"
+                        level="base"
                     />
 
                     <DemoCard
@@ -48,20 +53,22 @@ export default function Demos() {
                         features={[
                             "Formulario de reservas",
                             "Confirmación automática",
-                            "Organización básica"
+                            "Organización básica de citas",
                         ]}
                         href="/demo/reservas"
+                        level="advanced"
                     />
 
                     <DemoCard
-                        title="WhatsApp automático (IA)"
-                        description="Atiende clientes 24/7 como si fueras tú."
+                        title="WhatsApp automático"
+                        description="Atiende clientes 24/7 con un flujo guiado."
                         features={[
                             "Respuestas automáticas",
                             "Consulta de servicios",
-                            "Inicio de agendamiento"
+                            "Inicio de agendamiento",
                         ]}
                         href="/demo/whatsapp-ia"
+                        level="advanced"
                     />
                 </div>
             </div>

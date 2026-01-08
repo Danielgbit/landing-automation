@@ -1,35 +1,49 @@
 /**
  * HERO
  * Objetivo: impacto inmediato + CTA principal
+ * Rol: vender el sistema, no explicarlo todo
  */
 
 export default function Hero() {
     return (
-        <section id="hero" className="bg-white px-6 py-24 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 max-w-4xl mx-auto">
-                Tu WhatsApp puede atender clientes y recibir citas automáticamente
-            </h1>
+        <section
+            id="hero"
+            className="bg-brand-dark text-white px-6 py-32"
+        >
+            <div className="mx-auto max-w-5xl text-center">
+                {/* Headline */}
+                <h1 className="text-4xl md:text-5xl font-semibold tracking-tight max-w-4xl mx-auto">
+                    Convierte tu WhatsApp en un sistema
+                    <br className="hidden md:block" />
+                    de atención y reservas
+                </h1>
 
-            <p className="mt-6 text-lg text-gray-600 max-w-2xl mx-auto">
-                Consigue más clientes sin responder mensajes todo el día.
-                Ideal para negocios pequeños que trabajan con WhatsApp.
-            </p>
+                {/* Subheadline */}
+                <p className="mt-6 text-lg text-brand-subtle max-w-2xl mx-auto">
+                    Atiende clientes, muestra servicios y agenda citas
+                    automáticamente, sin responder mensajes todo el día.
+                </p>
 
-            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                    href="#demos"
-                    className="rounded-lg bg-green-600 px-6 py-3 text-white font-medium hover:bg-green-700 transition"
-                >
-                    Ver demo en acción
-                </a>
+                {/* CTAs */}
+                <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+                    {/* CTA principal */}
+                    <a
+                        href="#demos"
+                        className="inline-flex items-center justify-center rounded-xl bg-accent px-6 py-3 font-medium text-white hover:bg-accent-hover transition"
+                    >
+                        Ver demo en acción
+                    </a>
 
-                <a
-                    href="https://wa.me/573000000000"
-                    target="_blank"
-                    className="rounded-lg border border-gray-300 px-6 py-3 font-medium text-gray-800 hover:bg-gray-100 transition"
-                >
-                    Hablar conmigo por WhatsApp
-                </a>
+                    {/* CTA secundario */}
+                    <a
+                        href="https://wa.me/573000000000"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center rounded-xl border border-white/20 px-6 py-3 font-medium text-white/90 hover:bg-white/10 transition"
+                    >
+                        Hablar por WhatsApp
+                    </a>
+                </div>
             </div>
         </section>
     );

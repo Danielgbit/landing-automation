@@ -8,21 +8,34 @@ type Props = {
 
 export default function ServiceCard({ service }: Props) {
     return (
-        <div className="rounded-2xl border bg-white p-5 shadow-sm">
-            <h2 className="text-lg font-semibold">
+        <div className="
+      bg-brand-white
+      border border-gray-200
+      rounded-2xl
+      p-6
+      shadow-soft
+    ">
+            {/* Nombre */}
+            <h2 className="text-base font-semibold text-brand-primary">
                 {service.name}
             </h2>
 
+            {/* Descripción */}
             {service.description && (
-                <p className="mt-1 text-sm text-gray-600">
+                <p className="mt-2 text-sm text-brand-muted">
                     {service.description}
                 </p>
             )}
 
-            <div className="mt-4 flex items-center gap-3 text-sm text-gray-800">
-                <span>⏱ {service.duration_minutes} min</span>
-                <span>·</span>
-                <span>💲 {service.price}</span>
+            {/* Meta info */}
+            <div className="mt-4 flex items-center gap-4 text-xs text-brand-subtle">
+                <span>
+                    Duración: {service.duration_minutes} min
+                </span>
+                <span className="h-3 w-px bg-gray-300" />
+                <span>
+                    Precio: {service.price}
+                </span>
             </div>
         </div>
     )

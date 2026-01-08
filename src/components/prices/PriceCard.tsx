@@ -1,8 +1,15 @@
 /**
  * PriceCard
  * Card reutilizable para mostrar un plan de precios
- * NO contiene lógica de negocio
  */
+
+interface PriceCardProps {
+    title: string;
+    price: string;
+    subtitle: string;
+    features: string[];
+    highlighted?: boolean;
+}
 
 export default function PriceCard({
     title,
@@ -13,34 +20,44 @@ export default function PriceCard({
 }: PriceCardProps) {
     return (
         <div
-            className={`rounded-xl border p-6 ${highlighted
-                ? "border-green-600 bg-green-50"
-                : "border-gray-200 bg-white"
-                }`}
+            className={[
+                "bg-brand-white border rounded-2xl p-6 shadow-card flex flex-col",
+                highlighted
+                    ? "border-accent"
+                    : "border-gray-200",
+            ].join(" ")}
         >
-            <h3 className="text-lg font-semibold text-gray-900">
+            {/* Badge recomendado */}
+            {highlighted && (
+                <span className="mb-4 inline-block text-xs font-medium text-accent">
+                    Recomendado para empezar
+                </span>
+            )}
+
+            {/* Título */}
+            <h3 className="text-lg font-semibold text-brand-primary">
                 {title}
             </h3>
 
-            <p className="mt-2 text-sm text-gray-600">
+            {/* Subtítulo */}
+            <p className="mt-2 text-sm text-brand-muted">
                 {subtitle}
             </p>
 
-            <p className="mt-4 text-2xl font-bold text-green-600">
+            {/* Precio */}
+            <p className="mt-6 text-2xl font-semibold text-brand-primary">
                 {price}
             </p>
 
-            <ul className="mt-4 space-y-2 text-sm text-gray-700">
+            {/* Features */}
+            <ul className="mt-6 space-y-2 text-sm text-brand-muted">
                 {features.map((feature) => (
-                    <li key={feature}>✔️ {feature}</li>
+                    <li key={feature} className="flex gap-2">
+                        <span className="text-brand-subtle">•</span>
+                        <span>{feature}</span>
+                    </li>
                 ))}
             </ul>
-
-            {highlighted && (
-                <p className="mt-4 text-xs font-semibold text-green-700">
-                    ⭐ Más recomendado
-                </p>
-            )}
         </div>
     );
 }

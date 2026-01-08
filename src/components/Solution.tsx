@@ -1,28 +1,45 @@
 /**
  * SOLUCIÓN
- * Objetivo: explicar el sistema de forma simple
+ * Objetivo: explicar el sistema de forma clara y lógica
  */
 
 export default function Solution() {
     return (
-        <section className="bg-white px-6 py-20">
-            <div className="max-w-5xl mx-auto text-center">
-                <h2 className="text-3xl font-bold text-gray-900">
+        <section className="bg-brand-white px-6 py-24">
+            <div className="mx-auto max-w-5xl text-center">
+                {/* Título */}
+                <h2 className="text-xl md:text-2xl font-semibold text-brand-primary">
                     Un sistema simple que trabaja por ti
                 </h2>
 
-                <div className="mt-12 grid gap-6 md:grid-cols-5 text-gray-700 text-sm">
-                    <div>1️⃣ Cliente entra a tu página</div>
-                    <div>2️⃣ Escribe por WhatsApp</div>
-                    <div>3️⃣ El sistema responde solo</div>
-                    <div>4️⃣ Agenda una cita</div>
-                    <div>5️⃣ Tú solo atiendes</div>
+                {/* Flujo */}
+                <div className="mt-14 grid gap-6 md:grid-cols-5">
+                    {[
+                        'El cliente entra a tu página',
+                        'Inicia conversación por WhatsApp',
+                        'El sistema responde automáticamente',
+                        'Se agenda una cita',
+                        'Tú solo atiendes al cliente',
+                    ].map((step, index) => (
+                        <div
+                            key={step}
+                            className="bg-brand-light border border-gray-200 rounded-2xl px-4 py-6 text-sm text-brand-muted shadow-soft"
+                        >
+                            <div className="mb-2 text-xs font-medium text-brand-subtle">
+                                Paso {index + 1}
+                            </div>
+                            <p>{step}</p>
+                        </div>
+                    ))}
                 </div>
 
-                <p className="mt-10 text-gray-700 max-w-2xl mx-auto">
+                {/* Cierre */}
+                <p className="mt-14 text-sm text-brand-muted max-w-2xl mx-auto">
                     Tú te enfocas en tu negocio.
                     <br />
-                    El sistema se encarga de los mensajes.
+                    <span className="text-brand-primary font-medium">
+                        El sistema se encarga de los mensajes y las citas.
+                    </span>
                 </p>
             </div>
         </section>
