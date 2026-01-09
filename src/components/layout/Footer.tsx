@@ -53,7 +53,7 @@ export default function Footer() {
                     </p>
 
                     <a
-                        href="https://wa.me/573000000000?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20el%20sistema%20para%20mi%20negocio"
+                        href="https://wa.me/573024932976?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20el%20sistema%20para%20mi%20negocio"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="mt-4 inline-flex items-center text-sm font-medium text-accent hover:text-accent-hover transition"

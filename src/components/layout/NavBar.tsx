@@ -39,7 +39,7 @@ export default function Navbar() {
 
                     {/* CTA */}
                     <a
-                        href="https://wa.me/573000000000"
+                        href="https://wa.me/573024932976"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="
