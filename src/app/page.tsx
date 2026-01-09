@@ -1,15 +1,9 @@
-/**
- * HOME PAGE
- * Página de composición.
- * No contiene lógica ni markup complejo.
- */
-
-import Hero from "@/components/home/Hero";
-import Problems from "@/components/Problems";
-import Solution from "@/components/Solution";
-import Demos from "@/components/home/Demos";
-import Pricing from "@/components/home/Pricing";
-import FinalCTA from "@/components/home/FinalCTA";
+import Hero from "@/components/home/Hero"
+import Problems from "@/components/Problems"
+import Solution from "@/components/Solution"
+import Demos from "@/components/home/Demos"
+import Pricing from "@/components/home/Pricing"
+import FinalCTA from "@/components/home/FinalCTA"
 
 export default function HomePage() {
   return (
@@ -21,5 +15,5 @@ export default function HomePage() {
       <Pricing />
       <FinalCTA />
     </main>
-  );
+  )
 }

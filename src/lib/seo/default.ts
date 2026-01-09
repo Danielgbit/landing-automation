@@ -6,7 +6,7 @@ export const defaultMetadata = {
     metadataBase: new URL('https://focuside.com'),
 
     title: {
-        default: 'Focuside — Más clientes por WhatsApp',
+        default: 'Focuside Studio - Web & Automatizations',
         template: '%s | Focuside',
     },
 

@@ -1,8 +1,3 @@
-/**
- * DemoCard
- * Card reutilizable para demos
- */
-
 export default function DemoCard({
     title,
     description,
@@ -10,32 +5,28 @@ export default function DemoCard({
     href,
     level = "base",
 }: {
-    title: string;
-    description: string;
-    features: string[];
-    href: string;
-    level?: "base" | "advanced";
+    title: string
+    description: string
+    features: string[]
+    href: string
+    level?: "base" | "advanced"
 }) {
     return (
-        <div className="bg-brand-white border border-gray-200 rounded-2xl p-6 shadow-card flex flex-col justify-between">
+        <div className="bg-brand-white border border-gray-200 rounded-2xl p-5 sm:p-6 shadow-card flex flex-col justify-between">
             <div>
-                {/* Nivel */}
-                <span className="inline-block mb-3 text-xs font-medium text-brand-subtle">
+                <span className="inline-block mb-2 sm:mb-3 text-xs font-medium text-brand-subtle">
                     {level === "base" ? "Base" : "Automatización"}
                 </span>
 
-                {/* Título */}
-                <h3 className="text-lg font-semibold text-brand-primary">
+                <h3 className="text-base sm:text-lg font-semibold text-brand-primary">
                     {title}
                 </h3>
 
-                {/* Descripción */}
                 <p className="mt-2 text-sm text-brand-muted">
                     {description}
                 </p>
 
-                {/* Features */}
-                <ul className="mt-6 space-y-2 text-sm text-brand-muted">
+                <ul className="mt-4 sm:mt-6 space-y-2 text-sm text-brand-muted">
                     {features.map((feature) => (
                         <li key={feature} className="flex gap-2">
                             <span className="text-brand-subtle">•</span>
@@ -45,14 +36,12 @@ export default function DemoCard({
                 </ul>
             </div>
 
-            {/* CTA */}
             <a
                 href={href}
-                className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-accent hover:text-accent-hover transition"
+                className="mt-6 sm:mt-8 inline-flex items-center justify-center rounded-lg bg-accent/10 text-accent px-4 py-3 text-sm font-medium hover:bg-accent/20 transition"
             >
-                Ver demo
-                <span aria-hidden>→</span>
+                Ver demo →
             </a>
         </div>
-    );
+    )
 }

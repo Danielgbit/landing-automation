@@ -1,40 +1,27 @@
-import FakeNavbar from '@/components/demo/FakeNavbar'
-import Benefits from '@/components/demo/Benefits'
-import SimpleServiceList from '@/components/demo/SimpleServiceList'
-import HowItWorks from '@/components/demo/HowItWorks'
-import SimpleContactForm from '@/components/demo/SimpleContactForm'
-import TrustIndicators from '@/components/demo/TrustIndicators'
-import WhatsappPreview from '@/components/demo/WhatsappPreview'
+import LandingNavbar from '@/components/demo/landing/LandingNavbar'
+import Hero from '@/components/demo/landing/Hero'
+import Services from '@/components/demo/landing/Services'
+import Benefits from '@/components/demo/landing/Benefits'
+import HowItWorks from '@/components/demo/landing/HowItWorks'
+import FAQ from '@/components/demo/landing/FAQ'
+import FinalCTA from '@/components/demo/landing/FinalCTA'
+import FloatingWhatsApp from '@/components/demo/landing/FloatingWhatsApp'
 
-export default function LandingPage() {
+export default function DemoLandingPage() {
     return (
         <div className="min-h-screen bg-brand-light">
-            <main className="
-        mx-auto
-        max-w-3xl
-        rounded-2xl
-        bg-brand-white
-        px-6
-        py-20
-        shadow-card
-      ">
-                {/* HERO */}
-                <header className="text-center">
-                    <h1 className="text-2xl md:text-3xl font-semibold text-brand-primary">
-                        Agenda tu servicio fácilmente
-                    </h1>
-                    <p className="mt-3 text-sm text-brand-muted">
-                        Sin llamadas · Atención rápida por WhatsApp
-                    </p>
-                </header>
 
+            <main>
+                <LandingNavbar />
+                <Hero />
+                <Services />
                 <Benefits />
-                <SimpleServiceList />
                 <HowItWorks />
-                <WhatsappPreview />
-                <SimpleContactForm />
-                <TrustIndicators />
+                <FAQ />
+                <FinalCTA />
             </main>
+
+            <FloatingWhatsApp />
         </div>
     )
 }
