@@ -1,5 +1,5 @@
 import DemoCard from "@/components/shared/DemoCard"
-import SlideUp from "../motion/SlideUp"
+import SlideUp from "../ui/motion/SlideUp"
 
 export default function Demos() {
     return (
@@ -40,6 +40,18 @@ export default function Demos() {
                             href="/demo/servicios"
                             level="base"
                         />
+                        <DemoCard
+                            title="Tienda online (Ecommerce)"
+                            description="Vende productos directamente desde tu propia tienda."
+                            features={[
+                                "Catálogo de productos",
+                                "Carrito de compras",
+                                "Pedidos por WhatsApp o pago",
+                                "Dominio .com incluido",
+                            ]}
+                            href="/demo/ecommerce"
+                            level="advanced"
+                        />
 
                         <DemoCard
                             title="Reservas por web"
@@ -64,6 +76,7 @@ export default function Demos() {
                             href="/demo/whatsapp-ia"
                             level="advanced"
                         />
+
                     </div>
                 </SlideUp>
             </div>

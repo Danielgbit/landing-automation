@@ -3,7 +3,7 @@
  * Objetivo: identificación emocional + preparación para la solución
  */
 
-import SlideUp from "./motion/SlideUp";
+import SlideUp from "./ui/motion/SlideUp";
 
 export default function Problems() {
     return (

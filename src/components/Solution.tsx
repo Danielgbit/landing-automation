@@ -3,8 +3,8 @@
  * Objetivo: explicar el sistema de forma clara y lógica
  */
 
-import FadeIn from "./motion/FadeIn";
-import SlideUp from "./motion/SlideUp";
+import FadeIn from "./ui/motion/FadeIn";
+import SlideUp from "./ui/motion/SlideUp";
 
 export default function Solution() {
     return (

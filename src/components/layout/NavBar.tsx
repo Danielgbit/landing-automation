@@ -16,11 +16,13 @@ export default function Navbar() {
     return (
         <header
             className={`
-        sticky top-4 z-50 px-4
-        transition-all duration-300 ease-out
-        ${isVisible ? "translate-y-0 opacity-100" : "-translate-y-24 opacity-0"}
-      `}
+    fixed top-0 left-0 right-0 z-50
+    px-4 pt-4
+    transition-all duration-300 ease-out
+    ${isVisible ? "translate-y-0 opacity-100" : "-translate-y-24 opacity-0"}
+  `}
         >
+
             <div className="mx-auto max-w-7xl">
                 <div
                     className="
@@ -47,13 +49,13 @@ export default function Navbar() {
 
                     {/* LINKS (DESKTOP) */}
                     <nav className="hidden md:flex w-[40%] justify-between items-center gap-8 text-xs font-light text-black/90">
-                        <a href="#demos" className="hover:text-black transition">
+                        <a href="/#demos" className="hover:text-black transition">
                             Demos
                         </a>
-                        <a href="#solucion" className="hover:text-black transition">
+                        <a href="/#solucion" className="hover:text-black transition">
                             Cómo funciona
                         </a>
-                        <a href="#precios" className="hover:text-black transition">
+                        <a href="/#precios" className="hover:text-black transition">
                             Precios
                         </a>
                     </nav>

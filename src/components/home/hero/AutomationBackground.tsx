@@ -1,14 +1,14 @@
 'use client'
 
-import { motion } from "framer-motion"
-import { useMemo } from "react"
+import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import {
     MessageCircle,
     Calendar,
     Bot,
     Zap,
     Workflow,
-} from "lucide-react"
+} from 'lucide-react'
 
 const icons = [MessageCircle, Calendar, Bot, Zap, Workflow]
 
@@ -21,20 +21,25 @@ type FloatingIcon = {
 }
 
 export default function AutomationBackground() {
-    const floatingIcons = useMemo<FloatingIcon[]>(() => {
-        return Array.from({ length: 14 }).map((_, i) => {
+    const [floatingIcons, setFloatingIcons] = useState<FloatingIcon[]>([])
+
+    useEffect(() => {
+        const data: FloatingIcon[] = Array.from({ length: 14 }).map((_, i) => {
             const Icon = icons[i % icons.length]
 
             return {
                 Icon,
                 size: 28 + Math.random() * 36,
                 left: Math.random() * 100,
-                startY: Math.random() * 120 - 20, // ya distribuidos en el eje Y
+                startY: Math.random() * 120 - 20,
                 duration: 18 + Math.random() * 20,
-                delay: Math.random() * 8,
             }
         })
+
+        setFloatingIcons(data)
     }, [])
+
+    if (!floatingIcons.length) return null
 
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -47,12 +52,12 @@ export default function AutomationBackground() {
                         bottom: `${item.startY}vh`,
                     }}
                     animate={{
-                        y: ["0vh", "-140vh"],
+                        y: ['0vh', '-140vh'],
                     }}
                     transition={{
                         duration: item.duration,
                         repeat: Infinity,
-                        ease: "linear",
+                        ease: 'linear',
                     }}
                 >
                     <item.Icon size={item.size} />

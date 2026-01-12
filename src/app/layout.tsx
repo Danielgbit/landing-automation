@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${inter.variable} font-sans antialiased bg-brand-dark text-brand-muted`}
+        className={`${inter.variable} font-sans antialiased mx-0 my-0 text-brand-muted`}
       >
         <Navbar />
         {children}
