@@ -17,19 +17,20 @@ export const defaultMetadata = {
         icon: '/favicon.ico',
         apple: '/apple-touch-icon.png',
     },
-
     openGraph: {
         ...ogBase,
         title: 'Más clientes por WhatsApp — sin responder todo el día',
         description:
-            'Landing pages y automatización para peluquerías, centros de estética y negocios locales.',
+          'Landing pages y automatización para peluquerías, centros de estética y negocios locales.',
         images: [
-            {
-                url: '/branding/og.png',
-                width: 1200,
-                height: 630,
-                alt: 'Focuside — Automatiza tu WhatsApp',
-            },
+          {
+            url: 'og.png', // relativo al public
+            width: 1200,
+            height: 630,
+            alt: 'Focuside — Automatiza tu WhatsApp',
+          },
         ],
-    },
+      },
+      
+      
 }
