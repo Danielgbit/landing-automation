@@ -1,9 +1,19 @@
+'use client'
+
 /**
  * Footer
  * Objetivo: cierre de confianza + refuerzo comercial
  */
 
+import { useEffect, useState } from "react"
+
 export default function Footer() {
+    const [year, setYear] = useState<number | null>(null)
+
+    useEffect(() => {
+        setYear(new Date().getFullYear())
+    }, [])
+
     return (
         <footer className="bg-brand-dark px-6 py-16 text-white">
             <div className="mx-auto max-w-6xl grid gap-10 md:grid-cols-3">
@@ -52,23 +62,32 @@ export default function Footer() {
                         ¿Quieres ver si esto encaja con tu negocio?
                     </p>
 
-                    <a
-                        href="https://wa.me/573024932976?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20el%20sistema%20para%20mi%20negocio"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-4 inline-flex items-center text-sm font-medium text-accent hover:text-accent-hover transition"
-                    >
-                        Hablar por WhatsApp →
-                    </a>
+                    <div className="mt-4 space-y-2">
+                        <a
+                            href="https://wa.me/573024932976?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20el%20sistema%20para%20mi%20negocio"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block text-sm font-medium text-accent hover:text-accent-hover transition"
+                        >
+                            Hablar por WhatsApp →
+                        </a>
+
+                        <a
+                            href="mailto:contacto@focusidestudio.com"
+                            className="block text-xs text-brand-subtle hover:text-white transition"
+                        >
+                            contacto@focusidestudio.com
+                        </a>
+                    </div>
                 </div>
             </div>
 
             {/* Línea final */}
             <div className="mt-12 border-t border-white/10 pt-6 text-center">
                 <p className="text-xs text-brand-subtle">
-                    © {new Date().getFullYear()} · Sistema de automatización para negocios de servicios
+                    {year ? `© ${year}` : "©"} · Sistema de automatización para negocios de servicios
                 </p>
             </div>
         </footer>
-    );
+    )
 }
