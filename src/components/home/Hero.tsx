@@ -17,9 +17,11 @@ export default function Hero() {
                 <div className="relative mx-auto max-w-5xl text-center">
                     <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-tight max-w-4xl mx-auto">
                         Convierte tu WhatsApp en un sistema
-                        <br className="hidden sm:block" />
+                        <span className="hidden sm:block"></span>
+                        <span className="sm:hidden"> </span>
                         de atención y reservas
                     </h1>
+
 
                     <p className="mt-4 sm:mt-6 text-base sm:text-lg text-brand-subtle max-w-2xl mx-auto">
                         Atiende clientes, muestra servicios y agenda citas automáticamente, sin responder mensajes todo el día.
