@@ -3,7 +3,7 @@
 import { ogBase } from './og'
 
 export const defaultMetadata = {
-    metadataBase: new URL('https://focuside.com'),
+    metadataBase: new URL('https://focusidestudio.com'),
 
     title: {
         default: 'Focuside Studio - Web & Automatizations',
