@@ -2,7 +2,7 @@ import QRCode from "qrcode";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const target = "https://focusidestudio.com/qr/demo"; // tu demo real
+  const target = "https://focusidestudio.com"; // tu demo real
 
   const svg = await QRCode.toString(target, {
     type: "svg",
