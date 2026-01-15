@@ -1,60 +1,58 @@
-import { PricingPlanProps } from "@/types/pricing/pricingPlan";
-
-export const pricingPlans: PricingPlanProps[] = [
+export const pricingPlans = [
     {
-        id: "landing",
-        title: "Landing Profesional",
-        price: "$300.000 COP",
-        subtitle: "Convierte visitas en mensajes de WhatsApp",
-        features: [
-            "Landing page profesional",
-            "Menú con 3 secciones",
-            "Botón flotante de WhatsApp",
-            "Formulario conectado a WhatsApp",
-            "Diseño optimizado para móviles",
-            "Dominio .com incluido",
-        ],
+      id: "landing",
+      title: "Landing Profesional",
+      price: "$300.000 COP",
+      subtitle: "Tu WhatsApp empieza a trabajar por ti",
+      features: [
+        "Landing optimizada para WhatsApp",
+        "Formulario conectado a WhatsApp",
+        "Servicios visibles",
+        "Botón flotante",
+        "Diseño móvil",
+        "Dominio .com incluido",
+      ],
+      highlighted: true,
     },
-
+  
     {
-        id: "ecommerce",
-        title: "Tienda Online (Ecommerce)",
-        price: "$890.000 COP",
-        subtitle: "Empieza a vender productos por internet",
-        features: [
-            "Catálogo de hasta 10 productos",
-            "Carrito de compras",
-            "Pedidos por WhatsApp o pago manual",
-            "Página de producto",
-            "Diseño mobile + desktop",
-            "Dominio .com incluido",
-        ],
-        highlighted: true,
+      id: "reservas",
+      title: "Reservas por Web",
+      price: "$890.000 COP",
+      subtitle: "Los clientes se agendan solos",
+      features: [
+        "Formulario de citas",
+        "Servicios y horarios",
+        "Base de datos",
+        "Confirmación automática",
+        "Notificación por WhatsApp",
+      ],
     },
-
+  
     {
-        id: "automation-basic",
-        title: "WhatsApp Automático",
-        price: "Desde $120.000 / mes",
-        subtitle: "Responde clientes sin estar conectado",
-        features: [
-            "Respuestas automáticas",
-            "Información de servicios",
-            "Agendamiento básico",
-            "Soporte incluido",
-        ],
+      id: "automation-basic",
+      title: "WhatsApp Automático",
+      price: "Desde $120.000 / mes",
+      subtitle: "Responde clientes sin estar conectado",
+      features: [
+        "Información automática",
+        "Consulta de servicios",
+        "Respuestas 24/7",
+        "Soporte",
+      ],
     },
-
+  
     {
-        id: "automation-pro",
-        title: "Sistema Completo",
-        price: "Desde $180.000 / mes",
-        subtitle: "Ventas y atención totalmente automatizadas",
-        features: [
-            "WhatsApp con IA",
-            "Reservas automáticas",
-            "Panel de control",
-            "Flujos personalizados",
-        ],
+      id: "automation-pro",
+      title: "Sistema Completo",
+      price: "Desde $180.000 / mes",
+      subtitle: "Atención y reservas totalmente automatizadas",
+      features: [
+        "WhatsApp con IA",
+        "Reservas automáticas",
+        "Gestión de citas",
+        "Flujos personalizados",
+      ],
     },
-];
+  ]
+  
