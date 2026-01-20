@@ -1,22 +1,9 @@
-import QRCode from "qrcode";
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  const target = "https://focusidestudio.com"; // tu demo real
+export async function GET(request: Request) {
+  // 👉 DESTINO ACTUAL (puedes cambiarlo cuando quieras)
+  const destination =
+    "https://wa.me/573001234567?text=Hola%20quiero%20ver%20la%20demo";
 
-  const svg = await QRCode.toString(target, {
-    type: "svg",
-    margin: 1,
-    color: {
-      dark: "#000000",
-      light: "#ffffff",
-    },
-  });
-
-  return new NextResponse(svg, {
-    headers: {
-      "Content-Type": "image/svg+xml",
-      "Cache-Control": "public, max-age=86400",
-    },
-  });
+  return NextResponse.redirect(destination, 302);
 }
