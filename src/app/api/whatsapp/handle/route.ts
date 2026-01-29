@@ -1,3 +1,5 @@
+// src/app/api/whatsapp/handle/route.ts
+
 import { NextRequest, NextResponse } from 'next/server'
 import { detectIntent } from '@/services/ai/intent.service'
 import { getActiveServices } from '@/services/services.service'
@@ -5,8 +7,17 @@ import { createDemoAppointment } from '@/services/appointments.service'
 
 export async function POST(req: NextRequest) {
     try {
-        const { phone, message, source = 'whatsapp' } = await req.json()
+        const {
+            phone,
+            message,
+            source = 'whatsapp',
+            waba_id,
+            phone_number_id
+        } = await req.json()
 
+        // ===============================
+        // 1️⃣ Validación básica
+        // ===============================
         if (!phone || !message) {
             return NextResponse.json(
                 { error: 'phone and message are required' },
@@ -15,70 +26,88 @@ export async function POST(req: NextRequest) {
         }
 
         /**
-         * 🚫 REGLA DE PRODUCTO
-         * Si el mensaje viene del flujo WEB (DEMO 3),
-         * WhatsApp NO conversa ni responde.
+         * 🚫 Regla de producto
+         * Mensajes provenientes del flujo web
+         * NO generan conversación por WhatsApp.
          */
         if (source === 'web') {
             return NextResponse.json({
                 ignored: true,
-                reason: 'Message from web flow. No IA response.'
+                reason: 'Message from web flow. No WhatsApp response.'
             })
         }
 
         // ===============================
-        // DEMO 4 – WHATSAPP CON IA
+        // 2️⃣ Detección de intención (IA)
         // ===============================
-
-        // 1️⃣ Detectar intención
         const { intent } = await detectIntent(message)
 
-        // 2️⃣ Obtener servicios activos
+        // ===============================
+        // 3️⃣ Obtener servicios activos
+        // ===============================
         const services = await getActiveServices()
 
         if (services.length === 0) {
             return NextResponse.json({
-                reply: '❌ No hay servicios configurados en este momento.'
+                reply:
+                    '❌ En este momento no hay servicios disponibles. Por favor intenta más tarde.'
             })
         }
 
         const servicesText = services
             .map(
-                (s) =>
-                    `• ${s.name} – $${s.price} (${s.duration_minutes} min)`
+                (service) =>
+                    `• ${service.name} – $${service.price} (${service.duration_minutes} min)`
             )
             .join('\n')
 
+        // ===============================
+        // 4️⃣ Decisión determinística
+        // ===============================
         let appointment = null
 
-        // 3️⃣ Agenda SOLO si la intención lo permite
-        if (intent === 'agendar_cita' || intent === 'mixto') {
+        /**
+         * Solo se agenda si la intención es explícita.
+         * La IA NO decide acciones.
+         */
+        if (intent === 'agendar_cita') {
             appointment = await createDemoAppointment(phone, services[0])
         }
 
-        // 4️⃣ Respuesta final (conversacional)
-        let reply = `✨ *Nuestros servicios disponibles:*\n${servicesText}`
+        // ===============================
+        // 5️⃣ Construcción de respuesta
+        // ===============================
+        let reply = `✨ *Servicios disponibles:*\n${servicesText}`
 
         if (appointment) {
             reply += `
-            
-📅 *Tu cita quedó agendada*
+
+📅 *Cita creada*
 🧾 Servicio: ${appointment.service}
 🗓 Fecha: ${appointment.date}
 ⏰ Hora: ${appointment.time}
 
-Si deseas cambiarla o tienes preguntas, escríbenos 😊
+Si deseas modificarla o tienes preguntas, escríbenos 😊
 `
         } else {
             reply += `
 
-📲 Escríbenos si deseas agendar una cita.
+📲 Escríbenos si deseas agendar una cita o necesitas más información.
 `
         }
 
+        // ===============================
+        // 6️⃣ Respuesta final
+        // ===============================
         return NextResponse.json({
             reply,
-            appointment
+            intent,
+            appointment,
+            meta: {
+                source,
+                waba_id,
+                phone_number_id
+            }
         })
     } catch (error) {
         console.error('❌ API ERROR [whatsapp/handle]', error)

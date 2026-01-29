@@ -1,44 +1,33 @@
-//src/services/appointments.service.ts
+// src/services/appointments.service.ts
 
 import { supabaseAdmin } from '@/lib/supabase-admin'
 import { Service } from './services.service'
-
-export type AppointmentInfo = {
-    service: string
-    date: string
-    time: string
-}
-
-function getDemoAppointmentDate() {
-    const date = new Date()
-    date.setDate(date.getDate() + 1) // mañana
-    date.setHours(15, 0, 0, 0) // 3:00 PM
-    return date
-}
+import { calculateEndAt, getDemoAppointmentStart } from '@/helpers/appointment.helpers'
+import { AppointmentInfo } from '@/types/appointments.types'
 
 
-// DEMO 4 – WhatsApp IA (simulada)
+// ===============================
+// DEMO 4 – WhatsApp (IA-assisted)
+// Simulated, non-deterministic slot
+// ===============================
+
 export async function createDemoAppointment(
     phone: string,
     service: Service
 ): Promise<AppointmentInfo | null> {
-    const startAt = getDemoAppointmentDate()
-    const endAt = new Date(
-        startAt.getTime() + service.duration_minutes * 60000
-    )
+    const startAt = getDemoAppointmentStart()
+    const endAt = calculateEndAt(startAt, service.duration_minutes)
 
-    const { error } = await supabaseAdmin
-        .from('appointments')
-        .insert({
-            phone,
-            service_id: service.id,
-            start_at: startAt.toISOString(),
-            end_at: endAt.toISOString(),
-            status: 'confirmed'
-        })
+    const { error } = await supabaseAdmin.from('appointments').insert({
+        phone,
+        service_id: service.id,
+        start_at: startAt.toISOString(),
+        end_at: endAt.toISOString(),
+        status: 'confirmed'
+    })
 
     if (error) {
-        console.error('❌ Error creando cita', error)
+        console.error('❌ Error creating demo appointment', error)
         return null
     }
 
@@ -52,8 +41,11 @@ export async function createDemoAppointment(
     }
 }
 
+// ===============================
+// DEMO 3 – Web (deterministic)
+// Real user-selected slot
+// ===============================
 
-// DEMO 3 – Web (determinístico)
 export async function createWebAppointment(input: {
     phone: string
     serviceId: string
@@ -61,13 +53,12 @@ export async function createWebAppointment(input: {
     time: string
 }) {
     const startAt = new Date(`${input.date}T${input.time}:00`)
-
-    const endAt = new Date(startAt.getTime() + 60 * 60000)
+    const endAt = calculateEndAt(startAt, 60) // Fixed duration (MVP)
 
     const { data, error } = await supabaseAdmin
         .from('appointments')
         .insert({
-            phone: input.phone, // ✅ CORRECTO
+            phone: input.phone,
             service_id: input.serviceId,
             start_at: startAt.toISOString(),
             end_at: endAt.toISOString(),
@@ -77,8 +68,8 @@ export async function createWebAppointment(input: {
         .single()
 
     if (error) {
-        console.error('❌ Error creando cita (web)', error)
-        throw new Error('Error creando la cita')
+        console.error('❌ Error creating web appointment', error)
+        throw new Error('Error creating appointment')
     }
 
     return {
