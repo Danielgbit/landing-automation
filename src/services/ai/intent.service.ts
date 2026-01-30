@@ -1,55 +1,109 @@
-// src/services/ai/intent.service.ts
-
 import { groq } from '@/lib/groq'
 
 // ===============================
-// Types
+// Types (Shared Contract)
 // ===============================
 
-export type Intent =
+export type PrimaryIntent =
     | 'info_servicios'
     | 'info_precios'
     | 'agendar_cita'
     | 'mixto'
 
+export type IntentResult = {
+    primary_intent: PrimaryIntent
+    secondary_intent?: 'agendar_cita'
+    mentioned_service?: string
+    confidence: 'low' | 'medium' | 'high'
+}
+
 // ===============================
 // Constants
 // ===============================
 
-const ALLOWED_INTENTS: Intent[] = [
+const ALLOWED_PRIMARY_INTENTS: PrimaryIntent[] = [
     'info_servicios',
     'info_precios',
     'agendar_cita',
     'mixto'
 ]
 
+const ALLOWED_CONFIDENCE = ['low', 'medium', 'high'] as const
+
 // ===============================
-// Prompt builder (internal)
+// Prompt builder (STRICT)
 // ===============================
 
 function buildIntentPrompt(message: string): string {
     return `
-Eres un asistente para un negocio de servicios de estética.
+You are an intent extraction engine.
 
-Tu única tarea es CLASIFICAR la intención del mensaje del cliente.
-NO tomes decisiones.
-NO propongas acciones.
-NO respondas al cliente.
+MANDATORY RULES:
+- Output ONLY raw JSON
+- NO markdown
+- NO explanations
+- NO multiple values per field
+- Choose ONE value only
 
-Opciones de intención:
+Allowed values:
+
+primary_intent:
 - info_servicios
 - info_precios
 - agendar_cita
 - mixto
 
-Mensaje del cliente:
+secondary_intent:
+- agendar_cita
+- null
+
+confidence:
+- low
+- medium
+- high
+
+Message:
 "${message}"
 
-Responde SOLO en JSON válido:
+Return EXACTLY this JSON shape:
 {
-  "intent": "info_servicios | info_precios | agendar_cita | mixto"
+  "primary_intent": "info_servicios",
+  "secondary_intent": null,
+  "mentioned_service": null,
+  "confidence": "medium"
 }
 `
+}
+
+// ===============================
+// Helpers (internal, critical)
+// ===============================
+
+function sanitizeAIResponse(content: string): string {
+    return content
+        .replace(/```json/gi, '')
+        .replace(/```/g, '')
+        .trim()
+}
+
+function normalizePrimaryIntent(value: unknown): PrimaryIntent {
+    if (typeof value !== 'string') return 'info_servicios'
+
+    const normalized = value.toLowerCase()
+
+    if (normalized.includes('agendar')) return 'agendar_cita'
+    if (normalized.includes('precio')) return 'info_precios'
+    if (normalized.includes('servicio')) return 'info_servicios'
+    if (normalized.includes('mixto')) return 'mixto'
+
+    return 'info_servicios'
+}
+
+function normalizeConfidence(value: unknown): 'low' | 'medium' | 'high' {
+    if (value === 'low' || value === 'medium' || value === 'high') {
+        return value
+    }
+    return 'medium'
 }
 
 // ===============================
@@ -58,34 +112,77 @@ Responde SOLO en JSON válido:
 
 export async function detectIntent(
     message: string
-): Promise<{ intent: Intent }> {
+): Promise<IntentResult> {
     const prompt = buildIntentPrompt(message)
 
     const completion = await groq.chat.completions.create({
-        model: 'llama-3.1-8b-instant',
+        model: 'llama-3.3-70b-versatile',
         temperature: 0,
         messages: [{ role: 'user', content: prompt }]
     })
 
     const content = completion.choices[0]?.message?.content
 
+    // ===============================
+    // Hard fallback (no response)
+    // ===============================
     if (!content) {
         console.error('❌ Empty AI response')
-        return { intent: 'info_servicios' }
+        return {
+            primary_intent: 'info_servicios',
+            confidence: 'low'
+        }
     }
 
     try {
-        const parsed = JSON.parse(content)
-        const intent = parsed.intent
+        const sanitized = sanitizeAIResponse(content)
+        const parsed = JSON.parse(sanitized)
 
-        if (!ALLOWED_INTENTS.includes(intent)) {
-            console.warn('⚠️ Invalid intent from AI:', intent)
-            return { intent: 'info_servicios' }
+        const primary_intent = normalizePrimaryIntent(
+            parsed.primary_intent
+        )
+
+        const secondary_intent =
+            parsed.secondary_intent === 'agendar_cita'
+                ? 'agendar_cita'
+                : undefined
+
+        const mentioned_service =
+            typeof parsed.mentioned_service === 'string'
+                ? parsed.mentioned_service
+                : undefined
+
+        const confidence = normalizeConfidence(parsed.confidence)
+
+        // ===============================
+        // Final validation (paranoid)
+        // ===============================
+        if (!ALLOWED_PRIMARY_INTENTS.includes(primary_intent)) {
+            throw new Error('Primary intent not allowed')
         }
 
-        return { intent }
+        if (!ALLOWED_CONFIDENCE.includes(confidence)) {
+            throw new Error('Confidence not allowed')
+        }
+
+        return {
+            primary_intent,
+            secondary_intent,
+            mentioned_service,
+            confidence
+        }
     } catch (error) {
-        console.error('❌ Error parsing AI intent response', error)
-        return { intent: 'info_servicios' }
+        console.error(
+            '❌ Error parsing AI intent response',
+            error
+        )
+
+        // ===============================
+        // Safe fallback (never crash)
+        // ===============================
+        return {
+            primary_intent: 'info_servicios',
+            confidence: 'low'
+        }
     }
 }
