@@ -3,7 +3,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Service } from '@/services/services.service'
+import { Service } from '@/services/services/services.service'
 
 export function useActiveServices() {
     const [services, setServices] = useState<Service[]>([])

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createWebAppointment } from '@/services/appointments.service'
 import sendWhatsAppMessage from '@/services/whatsapp.service'
-import { getServiceById } from '@/services/services.service'
+import { getServiceById } from '@/services/services/services.service'
 import { normalizePhone } from '@/lib/phone'
 
 export async function POST(req: NextRequest) {

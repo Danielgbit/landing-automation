@@ -1,6 +1,6 @@
 'use client'
 
-import { Service } from '@/services/services.service'
+import { Service } from '@/services/services/services.service'
 
 type Props = {
     service: Service

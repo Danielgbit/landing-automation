@@ -1,7 +1,7 @@
 // src/services/appointments.service.ts
 
 import { supabaseAdmin } from '@/lib/supabase-admin'
-import { Service } from './services.service'
+import { Service } from './services/services.service'
 import { calculateEndAt, getDemoAppointmentStart } from '@/helpers/appointments/appointment.helpers'
 import { AppointmentInfo } from '@/types/appointments.types'
 

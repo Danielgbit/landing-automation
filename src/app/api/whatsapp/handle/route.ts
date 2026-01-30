@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { handleWhatsAppMessage } from '@/helpers/ai/whatsapp/handleWhatsAppMessage'
+import { handleWhatsAppMessage } from '@/services/whatsapp/handleWhatsAppMessage.service'
 
 // ===============================
 // Types (API Contract)

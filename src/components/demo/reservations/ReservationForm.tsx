@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useActiveServices } from '@/hooks/services/useActiveServices'
-import { Service } from '@/services/services.service'
+import { Service } from '@/services/services/services.service'
 
 type Props = {
     onSubmit: (data: {

@@ -1,8 +1,7 @@
 import { detectIntent } from '@/services/ai/intent.service'
-import { getActiveServices } from '@/services/services.service'
-import { createDemoAppointment } from '@/services/appointments.service'
-import { extractMessageSignals } from '@/helpers/ai/whatsapp/message-signals.helpers'
-import { buildWhatsAppReply } from '@/helpers/ai/whatsapp/whatsappReply.helpers'
+import { getActiveServices, Service } from '@/services/services/services.service'
+import { createDemoAppointment } from '@/services/appointments/appointments.service'
+import { buildWhatsAppReply } from '@/builders/whatsappReply.builder'
 
 // ===============================
 // Types
@@ -30,7 +29,7 @@ export type WhatsAppResult = {
 }
 
 // ===============================
-// Use Case
+// Use Case (Product logic)
 // ===============================
 
 export async function handleWhatsAppMessage(
@@ -52,16 +51,6 @@ export async function handleWhatsAppMessage(
     // ===============================
     const intentResult = await detectIntent(input.message)
 
-    /**
-     * intentResult ejemplo:
-     * {
-     *   primary_intent: 'info_precios',
-     *   secondary_intent: 'agendar_cita',
-     *   mentioned_service: 'corte',
-     *   confidence: 'high'
-     * }
-     */
-
     // ===============================
     // 2️⃣ Servicios activos (DB)
     // ===============================
@@ -75,9 +64,36 @@ export async function handleWhatsAppMessage(
     }
 
     // ===============================
-    // 3️⃣ Señales UX (fallback semántico)
+    // 3️⃣ Resolver servicio mencionado (match controlado)
     // ===============================
-    const signals = extractMessageSignals(input.message)
+    let matchedService: Service | undefined
+
+    if (intentResult.mentioned_service) {
+        const normalizedMention =
+            intentResult.mentioned_service.toLowerCase()
+
+        matchedService = services.find((service) => {
+            // Match por nombre
+            if (
+                service.name
+                    .toLowerCase()
+                    .includes(normalizedMention)
+            ) {
+                return true
+            }
+
+            // Match por aliases
+            if (service.aliases?.length) {
+                return service.aliases.some((alias) =>
+                    alias
+                        .toLowerCase()
+                        .includes(normalizedMention)
+                )
+            }
+
+            return false
+        })
+    }
 
     // ===============================
     // 4️⃣ Decisión determinística
@@ -86,16 +102,19 @@ export async function handleWhatsAppMessage(
 
     /**
      * Regla estricta:
-     * SOLO se agenda si la intención primaria es explícita
-     * y la IA tiene alta confianza.
+     * SOLO se agenda si:
+     * - la intención primaria es agendar_cita
+     * - la confianza es alta
+     * - existe un servicio claramente identificado
      */
     if (
         intentResult.primary_intent === 'agendar_cita' &&
-        intentResult.confidence === 'high'
+        intentResult.confidence === 'high' &&
+        matchedService
     ) {
         appointment = await createDemoAppointment(
             input.phone,
-            services[0] // DEMO: primer servicio
+            matchedService
         )
     }
 
@@ -104,8 +123,8 @@ export async function handleWhatsAppMessage(
     // ===============================
     const reply = buildWhatsAppReply({
         services,
+        matchedService,
         appointment,
-        signals,
         intent: intentResult
     })
 
