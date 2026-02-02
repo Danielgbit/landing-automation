@@ -5,7 +5,9 @@ import { buildWhatsAppReply } from '@/builders/whatsappReply.builder'
 import {
     getConversationState,
     updateConversationState,
-    resetConversationState
+    resetConversationState,
+    incrementRequestCount,
+    resetBurstCounter
 } from '@/services/conversations/conversationState.service'
 import {
     logInboundMessage,
@@ -72,6 +74,43 @@ export async function handleWhatsAppMessage(
     const conversationState = await getConversationState(
         input.phone
     )
+
+    // ===============================
+    // 1.5️⃣ Rate Limiting (BURST)
+    // ===============================
+    const RATE_LIMIT_MS = 60000 // 1 minuto
+    const MAX_REQUESTS = 10
+    const now = new Date()
+    const lastRequest = new Date(conversationState.last_request_at)
+
+    // Si pasó más de 1 minuto, reiniciamos contador
+    if (now.getTime() - lastRequest.getTime() > RATE_LIMIT_MS) {
+        await resetBurstCounter(input.phone)
+    } else {
+        // En la misma ráfaga
+        if (conversationState.request_count >= MAX_REQUESTS) {
+            console.warn(`[SECURITY] Rate limit hit for ${input.phone}`)
+
+            const reply = '⚠️ Has enviado muchos mensajes muy rápido. Por favor, espera un minuto para continuar. ¡Gracias por tu paciencia!'
+
+            await logOutboundMessage({
+                phone: input.phone,
+                message: reply,
+                source: input.source,
+                waba_id: input.waba_id,
+                phone_number_id: input.phone_number_id,
+                intent: 'rate_limited'
+            })
+
+            return {
+                reply,
+                ignored: true,
+                reason: 'Rate limit exceeded (burst)'
+            }
+        }
+
+        await incrementRequestCount(input.phone, conversationState.request_count)
+    }
 
     // ===============================
     // 2️⃣ IA – Intent

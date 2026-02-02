@@ -14,6 +14,8 @@ export type ConversationState = {
     current_step: ConversationStep
     selected_service_id: string | null
     last_intent: string | null
+    request_count: number
+    last_request_at: string
     updated_at: string
 }
 
@@ -43,7 +45,9 @@ export async function getConversationState(
                     phone,
                     current_step: 'idle',
                     selected_service_id: null,
-                    last_intent: null
+                    last_intent: null,
+                    request_count: 0,
+                    last_request_at: new Date().toISOString()
                 })
                 .select()
                 .single()
@@ -115,6 +119,7 @@ export async function resetConversationState(
             current_step: 'idle',
             selected_service_id: null,
             last_intent: null,
+            request_count: 0,
             updated_at: new Date().toISOString()
         })
         .eq('phone', phone)
@@ -127,3 +132,50 @@ export async function resetConversationState(
         throw new Error('Failed to reset conversation state')
     }
 }
+
+/**
+ * Incrementa el contador de peticiones del usuario.
+ */
+export async function incrementRequestCount(
+    phone: string,
+    currentCount: number
+): Promise<void> {
+    const { error } = await supabaseAdmin
+        .from('conversation_state')
+        .update({
+            request_count: currentCount + 1,
+            last_request_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        })
+        .eq('phone', phone)
+
+    if (error) {
+        console.error(
+            '❌ Error incrementing request count',
+            error
+        )
+        throw new Error('Failed to increment request count')
+    }
+}
+
+/**
+ * Reinicia el contador de ráfaga.
+ */
+export async function resetBurstCounter(
+    phone: string
+): Promise<void> {
+    const { error } = await supabaseAdmin
+        .from('conversation_state')
+        .update({
+            request_count: 1,
+            last_request_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        })
+        .eq('phone', phone)
+
+    if (error) {
+        console.error('❌ Error resetting burst counter', error)
+        throw new Error('Failed to reset burst counter')
+    }
+}
+
