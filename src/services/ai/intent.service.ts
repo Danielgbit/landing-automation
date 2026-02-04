@@ -14,6 +14,7 @@ export type IntentResult = {
     primary_intent: PrimaryIntent
     secondary_intent?: 'agendar_cita'
     mentioned_service?: string
+    mentioned_category?: string
     confidence: 'low' | 'medium' | 'high'
 }
 
@@ -70,6 +71,7 @@ Return EXACTLY this JSON shape:
   "primary_intent": "info_servicios",
   "secondary_intent": null,
   "mentioned_service": null,
+  "mentioned_category": "uñas",
   "confidence": "medium"
 }
 `
@@ -152,6 +154,11 @@ export async function detectIntent(
                 ? parsed.mentioned_service
                 : undefined
 
+        const mentioned_category =
+            typeof parsed.mentioned_category === 'string'
+                ? parsed.mentioned_category
+                : undefined
+
         const confidence = normalizeConfidence(parsed.confidence)
 
         // ===============================
@@ -169,6 +176,7 @@ export async function detectIntent(
             primary_intent,
             secondary_intent,
             mentioned_service,
+            mentioned_category,
             confidence
         }
     } catch (error) {

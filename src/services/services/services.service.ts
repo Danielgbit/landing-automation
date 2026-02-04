@@ -9,6 +9,7 @@ export type Service = {
     price: number
     duration_minutes: number
     aliases?: string[]
+    category?: string
 }
 
 export async function getActiveServices(): Promise<Service[]> {
