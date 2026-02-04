@@ -79,7 +79,7 @@ export async function handleWhatsAppMessage(
     // 1.5️⃣ Rate Limiting (BURST)
     // ===============================
     const RATE_LIMIT_MS = 60000 // 1 minuto
-    const MAX_REQUESTS = 10
+    const MAX_REQUESTS = 3
     const now = new Date()
     const lastRequest = new Date(conversationState.last_request_at)
 
