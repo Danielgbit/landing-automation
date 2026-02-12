@@ -16,7 +16,8 @@ export default function Hero() {
 
                 <div className="relative mx-auto max-w-5xl text-center">
                     <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-tight max-w-4xl mx-auto">
-                        Convierte tu WhatsApp en un sistema
+                        Página web profesional para tu negocio
+                        Capta más clientes desde hoy
                         <span className="hidden sm:block"></span>
                         <span className="sm:hidden"> </span>
                         de atención y reservas
