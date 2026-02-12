@@ -15,7 +15,7 @@ export default function Hero() {
                 <AutomationBackground />
 
                 <div className="relative mx-auto max-w-5xl text-center">
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-tight max-w-4xl mx-auto">
+                    <h1 className="text-2xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-tight max-w-4xl mx-auto">
                         Página web profesional para tu negocio
                         Capta más clientes desde hoy
                         <span className="hidden sm:block"></span>
