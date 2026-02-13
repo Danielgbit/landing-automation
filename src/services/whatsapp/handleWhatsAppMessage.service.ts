@@ -40,16 +40,26 @@ export type WhatsAppResult = {
 }
 
 // ===============================
-// Use Case (Product logic)
+// Helpers
+// ===============================
+
+function normalizeText(text: string): string {
+    return text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim()
+}
+
+// ===============================
+// Use Case
 // ===============================
 
 export async function handleWhatsAppMessage(
     input: WhatsAppInput
 ): Promise<WhatsAppResult> {
-    /**
-     * 🚫 Regla de producto
-     * El flujo WEB no genera respuestas por WhatsApp
-     */
+
+    // 🚫 Regla de producto
     if (input.source === 'web') {
         return {
             ignored: true,
@@ -57,41 +67,96 @@ export async function handleWhatsAppMessage(
         }
     }
 
-    // ===============================
-    // 0️⃣ LOG INBOUND (EVENTO)
-    // ===============================
-    await logInboundMessage({
-        phone: input.phone,
-        message: input.message,
-        source: input.source,
-        waba_id: input.waba_id,
-        phone_number_id: input.phone_number_id
-    })
+    try {
 
-    // ===============================
-    // 1️⃣ Estado conversacional (MEMORIA)
-    // ===============================
-    const conversationState = await getConversationState(
-        input.phone
-    )
+        // ===============================
+        // 0️⃣ LOG INBOUND
+        // ===============================
+        await logInboundMessage({
+            phone: input.phone,
+            message: input.message,
+            source: input.source,
+            waba_id: input.waba_id,
+            phone_number_id: input.phone_number_id
+        })
 
-    // ===============================
-    // 1.5️⃣ Rate Limiting (BURST)
-    // ===============================
-    const RATE_LIMIT_MS = 60000 // 1 minuto
-    const MAX_REQUESTS = 3
-    const now = new Date()
-    const lastRequest = new Date(conversationState.last_request_at)
+        // ===============================
+        // 1️⃣ Estado conversacional
+        // ===============================
+        const conversationState = await getConversationState(input.phone)
 
-    // Si pasó más de 1 minuto, reiniciamos contador
-    if (now.getTime() - lastRequest.getTime() > RATE_LIMIT_MS) {
-        await resetBurstCounter(input.phone)
-    } else {
-        // En la misma ráfaga
-        if (conversationState.request_count >= MAX_REQUESTS) {
-            console.warn(`[SECURITY] Rate limit hit for ${input.phone}`)
+        if (!conversationState) {
+            throw new Error('Conversation state not found')
+        }
 
-            const reply = '⚠️ Has enviado muchos mensajes muy rápido. Por favor, espera un minuto para continuar. ¡Gracias por tu paciencia!'
+        // ===============================
+        // 1.5️⃣ Rate Limiting (Burst Safe)
+        // ===============================
+        const RATE_LIMIT_MS = 60000
+        const MAX_REQUESTS = 7
+        const now = new Date()
+
+        const lastRequest = conversationState.last_request_at
+            ? new Date(conversationState.last_request_at)
+            : null
+
+        if (!lastRequest || now.getTime() - lastRequest.getTime() > RATE_LIMIT_MS) {
+
+            await resetBurstCounter(input.phone)
+
+        } else {
+
+            if (conversationState.request_count >= MAX_REQUESTS) {
+
+                const reply =
+                    '👋 Esta es una versión demostrativa del asistente inteligente. Para garantizar estabilidad, tiene un límite temporal de mensajes por minuto. Si deseas una versión sin límites para tu negocio, puedo explicarte cómo funciona 😉'
+
+                await logOutboundMessage({
+                    phone: input.phone,
+                    message: reply,
+                    source: input.source,
+                    waba_id: input.waba_id,
+                    phone_number_id: input.phone_number_id,
+                    intent: 'rate_limited'
+                })
+
+                return {
+                    reply,
+                    ignored: true,
+                    reason: 'Rate limit exceeded'
+                }
+            }
+
+            // 🔥 Incremento atómico (NO pasar contador actual)
+            await incrementRequestCount(input.phone)
+        }
+
+        // ===============================
+        // 2️⃣ IA – Intent (con fallback seguro)
+        // ===============================
+        let intentResult
+
+        try {
+            intentResult = await detectIntent(input.message)
+        } catch (error) {
+            console.error('Intent detection failed:', error)
+
+            return {
+                reply: '🤖 Lo siento, tuve un problema procesando tu mensaje. ¿Puedes intentar nuevamente?',
+                ignored: true,
+                reason: 'Intent detection failed'
+            }
+        }
+
+        // ===============================
+        // 3️⃣ Servicios activos
+        // ===============================
+        const services = await getActiveServices()
+
+        if (!services?.length) {
+
+            const reply =
+                '❌ En este momento no hay servicios disponibles. Por favor intenta más tarde.'
 
             await logOutboundMessage({
                 phone: input.phone,
@@ -99,148 +164,119 @@ export async function handleWhatsAppMessage(
                 source: input.source,
                 waba_id: input.waba_id,
                 phone_number_id: input.phone_number_id,
-                intent: 'rate_limited'
+                intent: 'no_services'
             })
 
-            return {
-                reply,
-                ignored: true,
-                reason: 'Rate limit exceeded (burst)'
+            return { reply }
+        }
+
+        // ===============================
+        // 4️⃣ Resolver servicio
+        // ===============================
+        let matchedService: Service | undefined
+        const normalizedMention = intentResult?.mentioned_service
+            ? normalizeText(intentResult.mentioned_service)
+            : null
+
+        if (normalizedMention) {
+            matchedService = services.find(service => {
+                const nameMatch =
+                    normalizeText(service.name).includes(normalizedMention)
+
+                const aliasMatch =
+                    service.aliases?.some(alias =>
+                        normalizeText(alias).includes(normalizedMention)
+                    )
+
+                return nameMatch || aliasMatch
+            })
+        }
+
+        // Fallback a memoria
+        if (!matchedService && conversationState.selected_service_id) {
+            matchedService = services.find(
+                service => service.id === conversationState.selected_service_id
+            )
+        }
+
+        // ===============================
+        // 5️⃣ Actualizar estado
+        // ===============================
+        if (matchedService) {
+            await updateConversationState(input.phone, {
+                current_step: 'service_selected',
+                selected_service_id: matchedService.id,
+                last_intent: intentResult?.primary_intent ?? null
+            })
+        }
+
+        // ===============================
+        // 6️⃣ Decisión determinística (AGENDAR)
+        // ===============================
+        let appointment = null
+
+        if (
+            intentResult?.primary_intent === 'agendar_cita' &&
+            intentResult?.confidence === 'high' &&
+            matchedService
+        ) {
+            try {
+                appointment = await createDemoAppointment(
+                    input.phone,
+                    matchedService
+                )
+
+                await resetConversationState(input.phone)
+
+            } catch (error) {
+                console.error('Appointment creation failed:', error)
             }
         }
 
-        await incrementRequestCount(input.phone, conversationState.request_count)
-    }
+        // ===============================
+        // 7️⃣ UX
+        // ===============================
+        const reply = buildWhatsAppReply({
+            services,
+            matchedService,
+            appointment,
+            intent: intentResult
+        })
 
-    // ===============================
-    // 2️⃣ IA – Intent
-    // ===============================
-    const intentResult = await detectIntent(input.message)
-
-    // ===============================
-    // 3️⃣ Servicios activos (DB)
-    // ===============================
-    const services = await getActiveServices()
-
-    if (services.length === 0) {
-        const reply =
-            '❌ En este momento no hay servicios disponibles. Por favor intenta más tarde.'
-
+        // ===============================
+        // 8️⃣ LOG OUTBOUND
+        // ===============================
         await logOutboundMessage({
             phone: input.phone,
             message: reply,
             source: input.source,
             waba_id: input.waba_id,
             phone_number_id: input.phone_number_id,
-            intent: 'no_services'
+            intent: intentResult?.primary_intent ?? 'unknown'
         })
 
-        return { reply }
-    }
-
-    // ===============================
-    // 4️⃣ Resolver servicio (mensaje O memoria)
-    // ===============================
-    let matchedService: Service | undefined
-
-    if (intentResult.mentioned_service) {
-        const normalized =
-            intentResult.mentioned_service.toLowerCase()
-
-        matchedService = services.find((service) => {
-            if (
-                service.name
-                    .toLowerCase()
-                    .includes(normalized)
-            ) {
-                return true
+        // ===============================
+        // 9️⃣ Resultado final
+        // ===============================
+        return {
+            reply,
+            intent: intentResult?.primary_intent,
+            appointment,
+            meta: {
+                source: input.source,
+                waba_id: input.waba_id,
+                phone_number_id: input.phone_number_id
             }
+        }
 
-            if (service.aliases?.length) {
-                return service.aliases.some((alias) =>
-                    alias
-                        .toLowerCase()
-                        .includes(normalized)
-                )
-            }
+    } catch (error) {
 
-            return false
-        })
-    }
+        console.error('WhatsApp handler error:', error)
 
-    if (
-        !matchedService &&
-        conversationState.selected_service_id
-    ) {
-        matchedService = services.find(
-            (service) =>
-                service.id ===
-                conversationState.selected_service_id
-        )
-    }
-
-    // ===============================
-    // 5️⃣ Actualizar estado
-    // ===============================
-    if (matchedService) {
-        await updateConversationState(input.phone, {
-            current_step: 'service_selected',
-            selected_service_id: matchedService.id,
-            last_intent: intentResult.primary_intent
-        })
-    }
-
-    // ===============================
-    // 6️⃣ Decisión determinística (AGENDAR)
-    // ===============================
-    let appointment = null
-
-    if (
-        intentResult.primary_intent === 'agendar_cita' &&
-        intentResult.confidence === 'high' &&
-        matchedService
-    ) {
-        appointment = await createDemoAppointment(
-            input.phone,
-            matchedService
-        )
-
-        await resetConversationState(input.phone)
-    }
-
-    // ===============================
-    // 7️⃣ UX
-    // ===============================
-    const reply = buildWhatsAppReply({
-        services,
-        matchedService,
-        appointment,
-        intent: intentResult
-    })
-
-    // ===============================
-    // 8️⃣ LOG OUTBOUND (DECISIÓN)
-    // ===============================
-    await logOutboundMessage({
-        phone: input.phone,
-        message: reply,
-        source: input.source,
-        waba_id: input.waba_id,
-        phone_number_id: input.phone_number_id,
-        intent: intentResult.primary_intent
-    })
-
-    // ===============================
-    // 9️⃣ Resultado final
-    // ===============================
-    return {
-        reply,
-        intent: intentResult.primary_intent,
-        appointment,
-        meta: {
-            source: input.source,
-            waba_id: input.waba_id,
-            phone_number_id: input.phone_number_id
+        return {
+            reply: '⚠️ Ocurrió un error inesperado. Por favor intenta nuevamente.',
+            ignored: true,
+            reason: 'Unhandled error'
         }
     }
 }
