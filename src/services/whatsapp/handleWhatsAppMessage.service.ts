@@ -93,7 +93,7 @@ export async function handleWhatsAppMessage(
         // 1.5️⃣ Rate Limiting (Burst Safe)
         // ===============================
         const RATE_LIMIT_MS = 60000
-        const MAX_REQUESTS = 7
+        const MAX_REQUESTS = 5
         const now = new Date()
 
         const lastRequest = conversationState.last_request_at

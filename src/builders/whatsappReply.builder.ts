@@ -65,14 +65,25 @@ Si deseas modificarla o tienes preguntas, escríbenos 😊`
      * 2️⃣ Caso: saludo (MUY IMPORTANTE)
      * Un saludo NO debe disparar el catálogo
      */
+    // ===============================
+    // 2️⃣ SALUDO (Versión DEMO clara)
+    // ===============================
     if (isGreeting(intent)) {
-        return `👋 ¡Hola! Bienvenido/a a Focuside Studio.
+        return `👋 *¡Hola! Bienvenido/a a Focuside Studio.*
 
-¿En qué podemos ayudarte hoy?
-• Consultar servicios
-• Ver precios
-• Agendar una cita`
+🚀 Estás probando nuestra *demo interactiva* del asistente inteligente para WhatsApp.
+
+Este sistema puede:
+• Responder automáticamente
+• Mostrar servicios y precios
+• Agendar citas
+• Gestionar clientes
+
+✨ Imagina esto funcionando 24/7 en tu negocio.
+
+¿Qué te gustaría probar primero?`
     }
+
 
     /**
      * 3️⃣ Caso: pregunta por servicios o precios
