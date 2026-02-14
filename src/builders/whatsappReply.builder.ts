@@ -7,11 +7,20 @@ import { PrimaryIntent } from '@/services/ai/intent.service'
 // ===============================
 
 type IntentContext = {
-    primary_intent: PrimaryIntent
+    primary_intent: PrimaryIntent | 'confirmar' | 'negar'
     secondary_intent?: 'agendar_cita'
     mentioned_service?: string
     mentioned_category?: string
     confidence: 'low' | 'medium' | 'high'
+}
+
+type ConversationState = {
+    current_step:
+    | 'idle'
+    | 'confirming_service'
+    | 'asking_date'
+    | 'asking_time'
+    selected_service_id?: string
 }
 
 type BuildReplyInput = {
@@ -19,19 +28,14 @@ type BuildReplyInput = {
     matchedService?: Service
     appointment: AppointmentInfo | null
     intent: IntentContext
+    conversationState?: ConversationState
 }
 
 // ===============================
-// Internal helpers (UX rules)
+// Helpers
 // ===============================
 
 function isGreeting(intent: IntentContext): boolean {
-    /**
-     * Consideramos saludo cuando:
-     * - La intención es info_servicios (fallback típico de la IA)
-     * - La confianza es baja
-     * - No hay servicio mencionado
-     */
     return (
         intent.primary_intent === 'info_servicios' &&
         intent.confidence === 'low' &&
@@ -40,18 +44,22 @@ function isGreeting(intent: IntentContext): boolean {
 }
 
 // ===============================
-// Builder (UX only)
+// MAIN BUILDER
 // ===============================
 
 export function buildWhatsAppReply({
     services,
     matchedService,
     appointment,
-    intent
+    intent,
+    conversationState
 }: BuildReplyInput): string {
-    /**
-     * 1️⃣ Caso: cita creada → NO catálogo
-     */
+
+    const step = conversationState?.current_step ?? 'idle'
+
+    // ==========================================
+    // 1️⃣ CITA CREADA (PRIORIDAD MÁXIMA)
+    // ==========================================
     if (appointment) {
         return `📅 *Cita creada*
 🧾 Servicio: ${appointment.service}
@@ -61,35 +69,71 @@ export function buildWhatsAppReply({
 Si deseas modificarla o tienes preguntas, escríbenos 😊`
     }
 
-    /**
-     * 2️⃣ Caso: saludo (MUY IMPORTANTE)
-     * Un saludo NO debe disparar el catálogo
-     */
-    // ===============================
-    // 2️⃣ SALUDO (Versión DEMO clara)
-    // ===============================
-    if (isGreeting(intent)) {
-        return `👋 *¡Hola! Bienvenido/a a Focuside Studio.*
+    // ==========================================
+    // 2️⃣ FLUJO POR ESTADO (ANTES QUE INTENT)
+    // ==========================================
 
-🚀 Estás probando nuestra *demo interactiva* del asistente inteligente para WhatsApp.
+    // ---- Confirmando servicio ----
+    if (step === 'confirming_service') {
 
-Este sistema puede:
-• Responder automáticamente
-• Mostrar servicios y precios
-• Agendar citas
-• Gestionar clientes
+        if (intent.primary_intent === 'confirmar') {
+            return `📅 Perfecto 👌
+¿Qué fecha deseas para tu cita?
 
-✨ Imagina esto funcionando 24/7 en tu negocio.
+Ejemplo:
+• 20 de febrero
+• mañana
+• este viernes`
+        }
 
-¿Qué te gustaría probar primero?`
+        if (intent.primary_intent === 'negar') {
+            return `No hay problema 😊
+¿Quieres ver otros servicios disponibles?`
+        }
+
+        return `¿Deseas agendar este servicio? 😊`
     }
 
+    // ---- Pidiendo fecha ----
+    if (step === 'asking_date') {
+        return `⏰ Perfecto.
 
-    /**
-     * 3️⃣ Caso: pregunta por servicios o precios
-     * Priorizamos el servicio específico si la IA lo detectó.
-     */
-    if (matchedService && (intent.primary_intent === 'info_servicios' || intent.primary_intent === 'info_precios')) {
+Ahora dime la hora en la que deseas tu cita.
+
+Ejemplo:
+• 3:00 pm
+• 10:30 am`
+    }
+
+    // ---- Pidiendo hora ----
+    if (step === 'asking_time') {
+        return `✅ Estoy verificando disponibilidad...
+
+Un momento por favor ⏳`
+    }
+
+    // ==========================================
+    // 3️⃣ SALUDO (solo si está en idle)
+    // ==========================================
+    if (step === 'idle' && isGreeting(intent)) {
+        return `👋 *¡Hola! Bienvenido/a a Focuside Studio.*
+
+Puedes:
+• Ver servicios
+• Consultar precios
+• Agendar una cita
+
+¿Qué te gustaría hacer?`
+    }
+
+    // ==========================================
+    // 4️⃣ SERVICIO ESPECÍFICO
+    // ==========================================
+    if (
+        matchedService &&
+        (intent.primary_intent === 'info_servicios' ||
+            intent.primary_intent === 'info_precios')
+    ) {
         return `💰 *${matchedService.name}*
 Precio: $${matchedService.price}
 Duración: ${matchedService.duration_minutes} min
@@ -99,81 +143,20 @@ ${matchedService.description || ''}
 ¿Deseas agendar este servicio?`
     }
 
-    /**
-     * 4️⃣ Caso: Catálogo general o por categorías (si no se detectó un servicio específico)
-     */
-    if (intent.primary_intent === 'info_servicios' || intent.primary_intent === 'info_precios') {
-        const mentionedCategory = intent.mentioned_category?.toLowerCase()
-
-        // Si el usuario mencionó una categoría, listamos servicios de esa categoría
-        if (mentionedCategory) {
-            const filteredServices = services.filter((s) =>
-                s.category?.toLowerCase().includes(mentionedCategory) ||
-                s.name.toLowerCase().includes(mentionedCategory)
-            )
-
-            if (filteredServices.length > 0) {
-                const servicesText = filteredServices
-                    .map(
-                        (service) =>
-                            `• ${service.name} – $${service.price} (${service.duration_minutes} min)`
-                    )
-                    .join('\n')
-
-                return `✨ *Nuestros servicios de ${intent.mentioned_category}:*
-${servicesText}
-
-¿Deseas agendar alguno de estos?`
-            }
-        }
-
-        // Si no hay categoría mencionada o no se encontraron servicios, mostramos categorías únicas
-        const categories = Array.from(
-            new Set(
-                services
-                    .map((s) => s.category)
-                    .filter(Boolean) as string[]
-            )
-        )
-
-        /**
-         * 💅 Uñas
-         * 💆 Masajes
-         * 💇 Cabello
-         * 🧘 Bienestar
-         * ✨ Estética
-         */
-        const categoryEmojis: Record<string, string> = {
-            uñas: '💅',
-            masajes: '💆',
-            cabello: '💇',
-            bienestar: '🧘',
-            estética: '✨',
-            limpieza: '🧼'
-        }
-
-        if (categories.length > 0) {
-            const categoriesText = categories
-                .map((cat) => {
-                    const emoji = categoryEmojis[cat.toLowerCase()] || '✨'
-                    return `${emoji} ${cat}`
-                })
-                .join('\n')
-
-            return `Contamos con las siguientes categorías:
-
-${categoriesText}
-
-*¿Cuál te interesa hoy?* Cuéntame y te daré los detalles.`
-        }
-
-        // Fallback: Deduplicación por nombre si no hay categorías definidas
-        const uniqueServices = services.filter((service, index, self) =>
-            index === self.findIndex((s) => s.name === service.name)
+    // ==========================================
+    // 5️⃣ CATÁLOGO GENERAL
+    // ==========================================
+    if (
+        intent.primary_intent === 'info_servicios' ||
+        intent.primary_intent === 'info_precios'
+    ) {
+        const uniqueServices = services.filter(
+            (service, index, self) =>
+                index === self.findIndex((s) => s.name === service.name)
         )
 
         const servicesText = uniqueServices
-            .slice(0, 7) // Limitamos a 7 para no agobiar
+            .slice(0, 7)
             .map(
                 (service) =>
                     `• ${service.name} – $${service.price} (${service.duration_minutes} min)`
@@ -183,20 +166,26 @@ ${categoriesText}
         return `✨ *Nuestros servicios disponibles:*
 ${servicesText}
 
-*¿Buscas algo específico?* Pregúntame por cualquier servicio.`
+¿Te interesa alguno en particular?`
     }
 
-    /**
-     * 5️⃣ Caso: intención de agendar sin servicio claro
-     */
+    // ==========================================
+    // 6️⃣ INTENCIÓN DIRECTA DE AGENDAR
+    // ==========================================
     if (intent.primary_intent === 'agendar_cita') {
-        return `📅 Perfecto, podemos agendar tu cita.
-Dime qué servicio deseas y te ayudo enseguida.`
+        return `📅 Perfecto.
+¿Qué servicio deseas agendar?`
     }
 
-    /**
-     * 6️⃣ Fallback humano (último recurso)
-     */
-    return `👋 Hola, ¿en qué podemos ayudarte?
-Puedes preguntarnos por servicios, precios o agendar una cita.`
+    // ==========================================
+    // 7️⃣ FALLBACK
+    // ==========================================
+    return `👋 Hola 😊
+
+Puedo ayudarte a:
+• Ver servicios
+• Consultar precios
+• Agendar una cita
+
+¿Qué deseas hacer?`
 }

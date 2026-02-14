@@ -1,7 +1,7 @@
 import SlideUp from "@/components/ui/motion/SlideUp"
 
 const WHATSAPP_DEMO_URL =
-    "https://wa.me/573014349906?text=Hola%20%F0%9F%91%8B%20Quiero%20probar%20el%20asistente%20autom%C3%A1tico%20para%20agendar%20una%20cita."
+    "https://wa.me/573014349906?text=Hola."
 
 
 export default function WhatsAppIADemoPage() {
