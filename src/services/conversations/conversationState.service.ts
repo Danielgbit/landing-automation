@@ -6,8 +6,9 @@ import { supabaseAdmin } from '@/lib/supabase-admin'
 
 export type ConversationStep =
     | 'idle'
-    | 'service_selected'
-    | 'confirming_booking'
+    | 'confirming_service'
+    | 'asking_date'
+    | 'asking_time'
 
 export type ConversationState = {
     phone: string

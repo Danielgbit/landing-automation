@@ -1,27 +1,21 @@
 import { Service } from '@/services/services/services.service'
 import { AppointmentInfo } from '@/types/appointments.types'
 import { PrimaryIntent } from '@/services/ai/intent.service'
+import { ConversationState } from '@/services/conversations/conversationState.service'
 
 // ===============================
 // Types
 // ===============================
 
 type IntentContext = {
-    primary_intent: PrimaryIntent | 'confirmar' | 'negar'
+    primary_intent: PrimaryIntent
     secondary_intent?: 'agendar_cita'
     mentioned_service?: string
     mentioned_category?: string
     confidence: 'low' | 'medium' | 'high'
 }
 
-type ConversationState = {
-    current_step:
-    | 'idle'
-    | 'confirming_service'
-    | 'asking_date'
-    | 'asking_time'
-    selected_service_id?: string
-}
+// La interfaz ConversationState se importa ahora del servicio centralizado.
 
 type BuildReplyInput = {
     services: Service[]

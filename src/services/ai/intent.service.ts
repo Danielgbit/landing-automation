@@ -10,6 +10,8 @@ export type PrimaryIntent =
     | 'agendar_cita'
     | 'cancelar_cita'
     | 'reagendar_cita'
+    | 'confirmar'
+    | 'negar'
     | 'mixto'
 
 export type IntentResult = {
@@ -30,6 +32,8 @@ const ALLOWED_PRIMARY_INTENTS: PrimaryIntent[] = [
     'agendar_cita',
     'cancelar_cita',
     'reagendar_cita',
+    'confirmar',
+    'negar',
     'mixto'
 ]
 
@@ -58,6 +62,8 @@ primary_intent:
 - agendar_cita
 - cancelar_cita
 - reagendar_cita
+- confirmar
+- negar
 - mixto
 
 secondary_intent:
@@ -105,6 +111,22 @@ function normalizePrimaryIntent(value: unknown): PrimaryIntent {
     if (normalized.includes('reprogramar')) return 'reagendar_cita'
     if (normalized.includes('precio')) return 'info_precios'
     if (normalized.includes('servicio')) return 'info_servicios'
+    if (
+        normalized === 'si' ||
+        normalized === 'confirmar' ||
+        normalized === 'claro' ||
+        normalized === 'vale' ||
+        normalized === 'ok' ||
+        normalized === 'acepto'
+    )
+        return 'confirmar'
+    if (
+        normalized === 'no' ||
+        normalized === 'negar' ||
+        normalized === 'cancelar' ||
+        normalized === 'rechazar'
+    )
+        return 'negar'
     if (normalized.includes('mixto')) return 'mixto'
 
     return 'info_servicios'
