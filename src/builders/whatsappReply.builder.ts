@@ -58,32 +58,47 @@ export function buildWhatsAppReply({
     const step = conversationState?.current_step ?? 'idle'
 
     // ==========================================
-    // 1️⃣ CITA CREADA (PRIORIDAD MÁXIMA)
+    // 1️⃣ INTENCIONES GLOBALES (PRIORIDAD ABSOLUTA)
     // ==========================================
+
+    if (intent.primary_intent === 'cancelar_cita') {
+        return `❌ Entiendo.
+
+Para cancelar tu cita, por favor confirma escribiendo:
+
+*CANCELAR*
+
+Si deseas reprogramarla también puedo ayudarte.`
+    }
+
+    if (intent.primary_intent === 'reagendar_cita') {
+        return `🔄 Claro, podemos reprogramar tu cita.
+
+¿Para qué fecha deseas cambiarla?`
+    }
+
+    // ==========================================
+    // 2️⃣ CITA CREADA
+    // ==========================================
+
     if (appointment) {
         return `📅 *Cita creada*
 🧾 Servicio: ${appointment.service}
 🗓 Fecha: ${appointment.date}
 ⏰ Hora: ${appointment.time}
 
-Si deseas modificarla o tienes preguntas, escríbenos 😊`
+Si necesitas modificarla o cancelarla, escríbenos 😊`
     }
 
     // ==========================================
-    // 2️⃣ FLUJO POR ESTADO (ANTES QUE INTENT)
+    // 3️⃣ FLUJO POR ESTADO
     // ==========================================
 
-    // ---- Confirmando servicio ----
     if (step === 'confirming_service') {
 
         if (intent.primary_intent === 'confirmar') {
             return `📅 Perfecto 👌
-¿Qué fecha deseas para tu cita?
-
-Ejemplo:
-• 20 de febrero
-• mañana
-• este viernes`
+¿Qué fecha deseas para tu cita?`
         }
 
         if (intent.primary_intent === 'negar') {
@@ -94,18 +109,12 @@ Ejemplo:
         return `¿Deseas agendar este servicio? 😊`
     }
 
-    // ---- Pidiendo fecha ----
     if (step === 'asking_date') {
         return `⏰ Perfecto.
 
-Ahora dime la hora en la que deseas tu cita.
-
-Ejemplo:
-• 3:00 pm
-• 10:30 am`
+Ahora dime la hora en la que deseas tu cita.`
     }
 
-    // ---- Pidiendo hora ----
     if (step === 'asking_time') {
         return `✅ Estoy verificando disponibilidad...
 
@@ -113,22 +122,24 @@ Un momento por favor ⏳`
     }
 
     // ==========================================
-    // 3️⃣ SALUDO (solo si está en idle)
+    // 4️⃣ SALUDO
     // ==========================================
+
     if (step === 'idle' && isGreeting(intent)) {
-        return `👋 *¡Hola! Bienvenido/a a Focuside Studio.*
+        return `👋 ¡Hola!
 
-Puedes:
+Puedo ayudarte con:
 • Ver servicios
-• Consultar precios
 • Agendar una cita
+• Cancelar o reprogramar una cita
 
-¿Qué te gustaría hacer?`
+¿Qué deseas hacer?`
     }
 
     // ==========================================
-    // 4️⃣ SERVICIO ESPECÍFICO
+    // 5️⃣ SERVICIO ESPECÍFICO
     // ==========================================
+
     if (
         matchedService &&
         (intent.primary_intent === 'info_servicios' ||
@@ -144,18 +155,14 @@ ${matchedService.description || ''}
     }
 
     // ==========================================
-    // 5️⃣ CATÁLOGO GENERAL
+    // 6️⃣ CATÁLOGO GENERAL
     // ==========================================
+
     if (
         intent.primary_intent === 'info_servicios' ||
         intent.primary_intent === 'info_precios'
     ) {
-        const uniqueServices = services.filter(
-            (service, index, self) =>
-                index === self.findIndex((s) => s.name === service.name)
-        )
-
-        const servicesText = uniqueServices
+        const servicesText = services
             .slice(0, 7)
             .map(
                 (service) =>
@@ -170,22 +177,24 @@ ${servicesText}
     }
 
     // ==========================================
-    // 6️⃣ INTENCIÓN DIRECTA DE AGENDAR
+    // 7️⃣ AGENDAR DIRECTO
     // ==========================================
+
     if (intent.primary_intent === 'agendar_cita') {
         return `📅 Perfecto.
 ¿Qué servicio deseas agendar?`
     }
 
     // ==========================================
-    // 7️⃣ FALLBACK
+    // 8️⃣ FALLBACK INTELIGENTE
     // ==========================================
-    return `👋 Hola 😊
 
-Puedo ayudarte a:
-• Ver servicios
-• Consultar precios
-• Agendar una cita
+    return `🤖 No estoy seguro de entenderte.
 
-¿Qué deseas hacer?`
+Puedes decir cosas como:
+• "Ver servicios"
+• "Agendar cita"
+• "Cancelar mi cita"
+
+¿En qué puedo ayudarte?`
 }

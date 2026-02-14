@@ -8,6 +8,8 @@ export type PrimaryIntent =
     | 'info_servicios'
     | 'info_precios'
     | 'agendar_cita'
+    | 'cancelar_cita'
+    | 'reagendar_cita'
     | 'mixto'
 
 export type IntentResult = {
@@ -26,6 +28,8 @@ const ALLOWED_PRIMARY_INTENTS: PrimaryIntent[] = [
     'info_servicios',
     'info_precios',
     'agendar_cita',
+    'cancelar_cita',
+    'reagendar_cita',
     'mixto'
 ]
 
@@ -52,6 +56,8 @@ primary_intent:
 - info_servicios
 - info_precios
 - agendar_cita
+- cancelar_cita
+- reagendar_cita
 - mixto
 
 secondary_intent:
@@ -94,6 +100,9 @@ function normalizePrimaryIntent(value: unknown): PrimaryIntent {
     const normalized = value.toLowerCase()
 
     if (normalized.includes('agendar')) return 'agendar_cita'
+    if (normalized.includes('cancelar')) return 'cancelar_cita'
+    if (normalized.includes('reagendar')) return 'reagendar_cita'
+    if (normalized.includes('reprogramar')) return 'reagendar_cita'
     if (normalized.includes('precio')) return 'info_precios'
     if (normalized.includes('servicio')) return 'info_servicios'
     if (normalized.includes('mixto')) return 'mixto'
