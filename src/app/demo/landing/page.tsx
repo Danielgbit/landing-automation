@@ -11,13 +11,21 @@ import SlideUp from '@/components/ui/motion/SlideUp'
 
 export default function DemoLandingPage() {
     return (
-        <div className="min-h-screen bg-brand-light">
-            <div className='mt-32 bg-white w-full h-full'></div>
-            <SlideUp>
-                <LandingNavbar />
-            </SlideUp>
-            <main>
-                <Hero />
+        <div className="min-h-screen bg-brand-dark overflow-hidden relative selection:bg-accent/30">
+            {/* Ambient Noise */}
+            <div className="bg-noise absolute inset-0 -z-10 opacity-20 pointer-events-none" />
+
+            {/* Navbar Floating */}
+            <div className="pt-8">
+                <SlideUp>
+                    <LandingNavbar />
+                </SlideUp>
+            </div>
+
+            <main className="relative z-10 flex flex-col gap-24 sm:gap-32 pb-32">
+                <div className="mt-16 sm:mt-24">
+                    <Hero />
+                </div>
                 <WhatYouGet />
                 <Services />
                 <Benefits />

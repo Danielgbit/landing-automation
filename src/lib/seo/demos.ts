@@ -1,19 +1,21 @@
+// src/lib/seo/demos.ts
+
 export const demosSEO = {
     services: {
-        title: 'Servicios y precios',
+        title: 'Servicios de Automatización Global | eCommerce y Web',
         description:
-            'Muestra tus servicios y precios claros y permite que tus clientes escriban directo por WhatsApp.',
+            'Agencia integral de desarrollo. Construimos y optimizamos tu base digital: Landing Pages a medida, plataformas de eCommerce y formularios avanzados.',
     },
 
     booking: {
-        title: 'Reservas online por WhatsApp',
+        title: 'Formularios Inteligentes a WhatsApp 24/7',
         description:
-            'Recibe citas desde tu web y confirma automáticamente por WhatsApp.',
+            'Integramos formularios web dentro de tus Landings que redirigen consultas, leads y agendas de forma impecable hacia un Agente IA en tu WhatsApp.',
     },
 
     ai: {
-        title: 'WhatsApp automático con IA',
+        title: 'Bots Conversacionales con IA Avanzada | WhatsApp',
         description:
-            'Responde preguntas, muestra servicios y agenda citas automáticamente sin perder control.',
+            'Implementamos asistentes basados en IA en tu línea comercial. Respuesta autónoma, soporte y calificación 24/7 sin pausas.',
     },
 }

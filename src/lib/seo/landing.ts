@@ -1,5 +1,7 @@
+// src/lib/seo/landing.ts
+
 export const landingSimpleSEO = {
-    title: 'Landing con WhatsApp para tu negocio',
+    title: 'Landing Pages y eCommerce de Alta Conversión | Focuside Studio',
     description:
-        'Consigue más clientes con una landing page conectada a WhatsApp. Ideal para peluquerías y negocios locales.',
+        'Diseñamos landing pages y tiendas en línea estratégicas. Conectamos formularios web directamente a tu WhatsApp impulsado por IA para cerrar más ventas.',
 }

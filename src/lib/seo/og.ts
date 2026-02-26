@@ -1,7 +1,7 @@
 // src/lib/seo/og.ts
 
 export const ogBase = {
-    siteName: 'Focuside',
+    siteName: 'Focuside Studio',
     type: 'website',
-    locale: 'es_CO',
+    locale: 'es_LA',
 }
