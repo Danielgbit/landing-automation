@@ -1,4 +1,4 @@
-import { Inter } from 'next/font/google'
+import { Syne, Plus_Jakarta_Sans } from 'next/font/google'
 import Navbar from '@/components/layout/navbar/NavBar'
 import './globals.css'
 import Footer from '@/components/layout/Footer'
@@ -7,14 +7,21 @@ import { defaultMetadata } from '@/lib/seo/default'
 
 export const metadata = defaultMetadata
 
-
-const inter = Inter({
+// Tipografía para Títulos (Display)
+const syne = Syne({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-inter',
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-syne',
   display: 'swap',
 })
 
+// Tipografía para Cuerpo (Legibilidad SaaS)
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-jakarta',
+  display: 'swap',
+})
 
 export default function RootLayout({
   children,
@@ -22,13 +29,18 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es">
+    <html lang="es" className="dark">
       <body
-        className={`${inter.variable} font-sans antialiased mx-0 my-0 text-brand-muted`}
+        className={`${syne.variable} ${jakarta.variable} font-sans antialiased text-brand-muted bg-brand-dark min-h-screen selection:bg-accent selection:text-brand-dark`}
       >
-        <Navbar />
-        {children}
-        <Footer />
+        <div className="fixed inset-0 bg-noise opacity-[0.03] pointer-events-none z-50"></div>
+        <div className="relative z-0 flex flex-col min-h-screen">
+          <Navbar />
+          <div className="flex-grow">
+            {children}
+          </div>
+          <Footer />
+        </div>
       </body>
     </html>
   )

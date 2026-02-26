@@ -18,7 +18,7 @@ export const pricingPlans = [
   {
     id: "reservas",
     title: "Reservas por Web",
-    price: "$890.000 COP",
+    price: "$500.000 COP",
     subtitle: "Los clientes se agendan solos",
     features: [
       "Formulario de citas",
@@ -32,25 +32,13 @@ export const pricingPlans = [
   {
     id: "automation-basic",
     title: "WhatsApp Automático",
-    price: "Desde $120.000 / mes",
+    price: "$69.000 / mes",
     subtitle: "Responde clientes sin estar conectado",
     features: [
       "Información automática",
       "Consulta de servicios",
       "Respuestas 24/7",
       "Soporte",
-    ],
-  },
-  {
-    id: "automation-pro",
-    title: "Sistema Completo",
-    price: "Desde $180.000 / mes",
-    subtitle: "Atención y reservas totalmente automatizadas",
-    features: [
-      "WhatsApp con IA",
-      "Reservas automáticas",
-      "Gestión de citas",
-      "Flujos personalizados",
     ],
   },
 ]
