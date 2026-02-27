@@ -89,9 +89,18 @@ export async function handleWhatsAppMessage(
         }
 
         // ===============================
-        // 2️⃣ Intent
+        // 1.5️⃣ Memory (Window Buffer)
         // ===============================
-        const intentResult = await detectIntent(input.message)
+        // Fetch last 4 messages to give AI context (e.g. for pronoun resolution)
+        const __historyRaw = await import('@/services/conversations/conversationLog.service').then(m => m.getRecentConversationHistory(input.phone, 4))
+        const historyContext = __historyRaw?.length > 1
+            ? __historyRaw.map(msg => `${msg.role}: ${msg.content}`).join('\n')
+            : undefined
+
+        // ===============================
+        // 2️⃣ Intent (Context-Aware)
+        // ===============================
+        const intentResult = await detectIntent(input.message, historyContext)
 
         // ===============================
         // 3️⃣ Servicios

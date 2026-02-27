@@ -43,7 +43,17 @@ const ALLOWED_CONFIDENCE = ['low', 'medium', 'high'] as const
 // Prompt builder (STRICT)
 // ===============================
 
-function buildIntentPrompt(message: string): string {
+function buildIntentPrompt(message: string, history?: string): string {
+    const historySection = history
+        ? `
+CONVERSATION CONTEXT (Last messages):
+---
+${history}
+---
+IMPORTANT: Use the context above ONLY to resolve pronouns or missing subjects (e.g. if the user says "eso", "el primero", "sí, lo quiero", look at the context to know WHAT they refer to).
+`
+        : ''
+
     return `
 You are an intent extraction engine.
 
@@ -53,6 +63,7 @@ MANDATORY RULES:
 - NO explanations
 - NO multiple values per field
 - Choose ONE value only
+- Calculate intent for the FINAL "Message:", using context ONLY for reference.
 
 Allowed values:
 
@@ -74,7 +85,7 @@ confidence:
 - low
 - medium
 - high
-
+${historySection}
 Message:
 "${message}"
 
@@ -144,9 +155,10 @@ function normalizeConfidence(value: unknown): 'low' | 'medium' | 'high' {
 // ===============================
 
 export async function detectIntent(
-    message: string
+    message: string,
+    history?: string
 ): Promise<IntentResult> {
-    const prompt = buildIntentPrompt(message)
+    const prompt = buildIntentPrompt(message, history)
 
     const completion = await groq.chat.completions.create({
         model: 'llama-3.3-70b-versatile',

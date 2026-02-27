@@ -48,6 +48,38 @@ async function insertLog(input: LogMessageInput): Promise<void> {
 // ===============================
 
 /**
+ * Obtiene el historial reciente para inyectar como contexto a la IA
+ * (Patrón: Window Buffer Memory)
+ */
+export async function getRecentConversationHistory(
+    phone: string,
+    limit: number = 4
+): Promise<{ role: string; content: string }[]> {
+    const { data, error } = await supabaseAdmin
+        .from('conversations')
+        .select('direction, message')
+        .eq('phone', phone)
+        .order('created_at', { ascending: false })
+        .limit(limit)
+
+    if (error) {
+        console.error('❌ Failed to fetch conversation history', error)
+        return []
+    }
+
+    if (!data || data.length === 0) return []
+
+    // Los datos vienen del más nuevo al más viejo (DESC).
+    // Necesitamos ordenarlos cronológicamente para el prompt de la IA.
+    const history = data.reverse().map(log => ({
+        role: log.direction === 'inbound' ? 'User' : 'Assistant',
+        content: log.message
+    }))
+
+    return history
+}
+
+/**
  * Registra un mensaje ENTRANTE del usuario.
  * Debe llamarse apenas llega el mensaje.
  */
