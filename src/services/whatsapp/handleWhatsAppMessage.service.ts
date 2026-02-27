@@ -11,7 +11,8 @@ import {
 } from '@/services/conversations/conversationState.service'
 import {
     logInboundMessage,
-    logOutboundMessage
+    logOutboundMessage,
+    getRecentConversationHistory
 } from '@/services/conversations/conversationLog.service'
 
 // ===============================
@@ -69,44 +70,42 @@ export async function handleWhatsAppMessage(
     try {
 
         // ===============================
-        // 0️⃣ LOG INBOUND
+        // 0️⃣ LOG INBOUND (fire & forget — no bloquea el flujo)
         // ===============================
-        await logInboundMessage({
+        logInboundMessage({
             phone: input.phone,
             message: input.message,
             source: input.source,
             waba_id: input.waba_id,
             phone_number_id: input.phone_number_id
-        })
+        }).catch(e => console.error('❌ Fire-and-forget inbound log failed', e))
 
         // ===============================
-        // 1️⃣ Estado conversacional
+        // 1️⃣ Fetch paralelo (Parallel Processing Pattern)
+        // Estado + Historial + Servicios corren al mismo tiempo
         // ===============================
-        const conversationState = await getConversationState(input.phone)
+        const [conversationState, historyRaw, services] = await Promise.all([
+            getConversationState(input.phone),
+            getRecentConversationHistory(input.phone, 4),
+            getActiveServices()
+        ])
 
         if (!conversationState) {
             throw new Error('Conversation state not found')
         }
 
         // ===============================
-        // 1.5️⃣ Memory (Window Buffer)
+        // 2️⃣ Intent (Context-Aware con Window Buffer Memory)
         // ===============================
-        // Fetch last 4 messages to give AI context (e.g. for pronoun resolution)
-        const __historyRaw = await import('@/services/conversations/conversationLog.service').then(m => m.getRecentConversationHistory(input.phone, 4))
-        const historyContext = __historyRaw?.length > 1
-            ? __historyRaw.map(msg => `${msg.role}: ${msg.content}`).join('\n')
+        const historyContext = historyRaw?.length > 1
+            ? historyRaw.map(msg => `${msg.role}: ${msg.content}`).join('\n')
             : undefined
 
-        // ===============================
-        // 2️⃣ Intent (Context-Aware)
-        // ===============================
         const intentResult = await detectIntent(input.message, historyContext)
 
         // ===============================
-        // 3️⃣ Servicios
+        // 3️⃣ Validar servicios
         // ===============================
-        const services = await getActiveServices()
-
         if (!services?.length) {
             const reply = '❌ En este momento no hay servicios disponibles.'
             return { reply }
@@ -207,16 +206,16 @@ export async function handleWhatsAppMessage(
         })
 
         // ===============================
-        // 7️⃣ LOG OUTBOUND
+        // 7️⃣ LOG OUTBOUND (fire & forget — no bloquea la respuesta)
         // ===============================
-        await logOutboundMessage({
+        logOutboundMessage({
             phone: input.phone,
             message: reply,
             source: input.source,
             waba_id: input.waba_id,
             phone_number_id: input.phone_number_id,
             intent: intentResult?.primary_intent ?? 'unknown'
-        })
+        }).catch(e => console.error('❌ Fire-and-forget outbound log failed', e))
 
         return {
             reply,
