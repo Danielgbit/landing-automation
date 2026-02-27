@@ -33,53 +33,60 @@ export default function ReservasPage() {
     }
 
     return (
-        <main className="min-h-screen relative pt-32 pb-24 px-4 overflow-hidden">
+        <main className="min-h-screen relative pt-24 pb-16 sm:pt-32 sm:pb-24 px-4 overflow-hidden w-full max-w-[100vw]">
             {/* BACKGROUNDS */}
             <div className="absolute inset-0 bg-brand-dark -z-20" />
-            <div className="bg-noise absolute inset-0 -z-10 opacity-20" />
+            <div className="bg-noise absolute inset-0 -z-10 opacity-20 mix-blend-overlay" />
 
-            {/* ESTÉTICA CIBER: GRADIENTE RADIAL */}
-            <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-accent/10 rounded-full blur-[120px] -z-10 opacity-40" />
+            {/* ESTÉTICA CIBER: GRADIENTE RADIAL (Fijado para evitar overflow en mobile) */}
+            <div className="absolute top-[10%] sm:top-[20%] left-1/2 -translate-x-1/2 w-[150vw] sm:w-[800px] h-[300px] sm:h-[400px] bg-accent/15 rounded-full blur-[100px] sm:blur-[120px] -z-10 opacity-40 pointer-events-none" />
 
-            <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
                 {/* LADO IZQUIERDO: COPY MARKETING */}
                 <SlideUp delay={0.1}>
-                    <div className="max-w-xl text-center lg:text-left">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold text-accent mb-6">
+                    <div className="max-w-xl text-center lg:text-left mx-auto lg:mx-0">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 backdrop-blur-md px-4 py-1.5 text-xs sm:text-sm font-semibold text-accent mb-6 sm:mb-8 shadow-[0_0_15px_rgba(0,255,163,0.1)]">
                             <span className="relative flex h-2 w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
                             </span>
                             Live Demo Booking
                         </div>
-                        <h1 className="text-3xl sm:text-5xl font-display font-semibold text-white leading-tight mb-6">
-                            Experimenta el <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-accent text-glow">agendamiento inteligente.</span>
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold text-white leading-[1.1] tracking-tight mb-6">
+                            Experimenta el <br className="hidden sm:block" />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-accent to-emerald-400 drop-shadow-[0_0_15px_rgba(0,255,163,0.3)]">agendamiento inteligente.</span>
                         </h1>
-                        <p className="text-base sm:text-lg text-brand-muted mb-8">
-                            Nuestra IA agenda, notifica y califica a tus prospectos 24/7 sin fricción. Reserva tu demo gratuita y descubre cómo multiplicar tu captación en piloto automático.
+                        <p className="text-base sm:text-lg text-brand-muted mb-8 sm:mb-10 leading-relaxed">
+                            Nuestra IA califica a tus prospectos 24/7 y los agenda directamente en tu calendario sin fricción. Reserva tu demo B2B gratuita y descubre cómo multiplicar tu captación en piloto automático.
                         </p>
 
-                        {/* SOCIAL PROOF (LEAD GEN) */}
-                        <div className="bg-brand-surface/40 border border-white/5 rounded-2xl p-6 backdrop-blur-sm">
-                            <p className="text-sm text-brand-muted mb-4 font-medium uppercase tracking-wider">Por qué agendar con nosotros:</p>
-                            <ul className="space-y-3 text-sm text-white/80">
-                                <li className="flex items-center gap-3">
-                                    <svg className="w-5 h-5 text-accent shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Cero fricción: No requerimos tarjeta de crédito
+                        {/* SOCIAL PROOF / BENEFITS (LEAD GEN) */}
+                        <div className="bg-brand-surface/40 border border-white/10 rounded-2xl p-6 sm:p-8 backdrop-blur-xl shadow-glow_subtle text-left">
+                            <p className="text-xs sm:text-sm text-brand-subtle mb-5 font-semibold uppercase tracking-wider">La ventaja operativa:</p>
+                            <ul className="space-y-4 text-sm sm:text-base text-white/90">
+                                <li className="flex items-start gap-3">
+                                    <div className="mt-0.5 rounded-full bg-accent/20 p-1">
+                                        <svg className="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <span><strong>Cero fricción:</strong> Demo directa en WhatsApp sin requerir tarjetas de crédito.</span>
                                 </li>
-                                <li className="flex items-center gap-3">
-                                    <svg className="w-5 h-5 text-accent shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Atención inmediata automatizada y personalizada
+                                <li className="flex items-start gap-3">
+                                    <div className="mt-0.5 rounded-full bg-accent/20 p-1">
+                                        <svg className="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <span><strong>Calificación instantánea:</strong> Filtra prospectos no calificados antes de la llamada.</span>
                                 </li>
-                                <li className="flex items-center gap-3">
-                                    <svg className="w-5 h-5 text-accent shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Ahorra hasta 15 horas semanales en respuestas
+                                <li className="flex items-start gap-3">
+                                    <div className="mt-0.5 rounded-full bg-accent/20 p-1">
+                                        <svg className="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <span><strong>Recupera 15h semanales:</strong> Elimina el ping-pong de correos para buscar espacio.</span>
                                 </li>
                             </ul>
                         </div>
@@ -90,7 +97,7 @@ export default function ReservasPage() {
                 <SlideUp delay={0.2}>
                     <ReservationForm loading={loading} onSubmit={createAppointment} />
                     {error && (
-                        <p className="mt-6 text-center text-sm font-medium text-red-400 bg-red-400/10 py-3 px-4 rounded-xl border border-red-400/20 backdrop-blur-sm">
+                        <p className="mt-6 text-center text-sm font-medium text-red-300 bg-red-500/10 py-3 px-4 rounded-xl border border-red-500/20 backdrop-blur-sm shadow-[0_0_15px_rgba(239,68,68,0.1)]">
                             Ocurrió un error: {error}
                         </p>
                     )}
