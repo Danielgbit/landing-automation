@@ -160,9 +160,9 @@ export async function detectIntent(
     // Hard fallback (no response)
     // ===============================
     if (!content) {
-        console.error('❌ Empty AI response')
+        console.warn('⚠️ Empty AI response - triggering fallback clarification')
         return {
-            primary_intent: 'info_servicios',
+            primary_intent: 'info_servicios', // Will trigger fallback in builder due to low confidence
             confidence: 'low'
         }
     }
@@ -219,8 +219,9 @@ export async function detectIntent(
         // ===============================
         // Safe fallback (never crash)
         // ===============================
+        console.warn('⚠️ Falling back to safe intent due to parsing error')
         return {
-            primary_intent: 'info_servicios',
+            primary_intent: 'info_servicios', // Triggers clarification in builder on low confidence
             confidence: 'low'
         }
     }

@@ -56,19 +56,20 @@ export function buildWhatsAppReply({
     // ==========================================
 
     if (intent.primary_intent === 'cancelar_cita') {
-        return `❌ Entiendo.
+        return `❌ Entiendo perfectamente.
 
-Para cancelar tu cita, por favor confirma escribiendo:
+¿Estás seguro de que deseas cancelar y perder tu espacio reservado? 
 
+Para confirmar la cancelación, escribe:
 *CANCELAR*
 
-Si deseas reprogramarla también puedo ayudarte.`
+Si prefieres no perder tu lugar, también podemos *REPROGRAMAR* para otra fecha que te quede mejor.`
     }
 
     if (intent.primary_intent === 'reagendar_cita') {
-        return `🔄 Claro, podemos reprogramar tu cita.
+        return `🔄 Claro, conservaremos tu espacio pero en un nuevo horario.
 
-¿Para qué fecha deseas cambiarla?`
+¿Para qué nueva fecha te gustaría reprogramar?`
     }
 
     // ==========================================
@@ -76,12 +77,14 @@ Si deseas reprogramarla también puedo ayudarte.`
     // ==========================================
 
     if (appointment) {
-        return `📅 *Cita creada*
+        return `🎉 *¡Felicidades! Tu cita está confirmada.*
 🧾 Servicio: ${appointment.service}
 🗓 Fecha: ${appointment.date}
 ⏰ Hora: ${appointment.time}
 
-Si necesitas modificarla o cancelarla, escríbenos 😊`
+👉 *Importante:* Nuestros espacios son limitados. Si no puedes asistir, avísanos con tiempo para ceder el lugar a otra persona.
+
+¡Nos vemos pronto! 😊`
     }
 
     // ==========================================
@@ -91,22 +94,22 @@ Si necesitas modificarla o cancelarla, escríbenos 😊`
     if (step === 'confirming_service') {
 
         if (intent.primary_intent === 'confirmar') {
-            return `📅 Perfecto 👌
-¿Qué fecha deseas para tu cita?`
+            return `📅 ¡Excelente elección! 👌
+Para asegurar tu espacio, ¿qué fecha prefieres para tu cita?`
         }
 
         if (intent.primary_intent === 'negar') {
             return `No hay problema 😊
-¿Quieres ver otros servicios disponibles?`
+Tenemos otras opciones que podrían interesarte. ¿Te gustaría ver el menú de servicios?`
         }
 
-        return `¿Deseas agendar este servicio? 😊`
+        return `Este servicio es muy solicitado. ¿Deseas asegurar tu cita ahora mismo? 😊 (Responde *SÍ* para continuar)`
     }
 
     if (step === 'asking_date') {
-        return `⏰ Perfecto.
+        return `⏰ ¡Casi listo!
 
-Ahora dime la hora en la que deseas tu cita.`
+Solo falta un detalle: ¿A qué hora te gustaría agendar?`
     }
 
     if (step === 'asking_time') {
@@ -120,14 +123,14 @@ Un momento por favor ⏳`
     // ==========================================
 
     if (step === 'idle' && isGreeting(intent)) {
-        return `👋 ¡Hola!
+        return `👋 ¡Hola! Qué gusto saludarte.
 
-Puedo ayudarte con:
-• Ver servicios
-• Agendar una cita
-• Cancelar o reprogramar una cita
+Para ayudarte más rápido, dime qué necesitas hoy:
+1️⃣ *Ver servicios y precios*
+2️⃣ *Agendar una nueva cita*
+3️⃣ *Gestionar una cita existente*
 
-¿Qué deseas hacer?`
+(Responde con el número o la palabra clave)`
     }
 
     // ==========================================
@@ -156,18 +159,20 @@ ${matchedService.description || ''}
         intent.primary_intent === 'info_servicios' ||
         intent.primary_intent === 'info_precios'
     ) {
+        // Paradox of choice: limit options to top 3-4 to avoid overwhelm
         const servicesText = services
-            .slice(0, 7)
+            .slice(0, 4)
             .map(
                 (service) =>
-                    `• ${service.name} – $${service.price} (${service.duration_minutes} min)`
+                    `• *${service.name}* – $${service.price}`
             )
             .join('\n')
 
-        return `✨ *Nuestros servicios disponibles:*
+        return `✨ *Nuestros servicios destacados:*
 ${servicesText}
 
-¿Te interesa alguno en particular?`
+💡 Si buscas algo más específico, cuéntame.
+¿Sobre cuál de estos te gustaría saber más o agendar?`
     }
 
     // ==========================================
@@ -183,12 +188,13 @@ ${servicesText}
     // 8️⃣ FALLBACK INTELIGENTE
     // ==========================================
 
-    return `🤖 No estoy seguro de entenderte.
+    // Pratfall Effect / Vulnerability
+    return `🤖 Para ser totalmente honesto, no estoy seguro de haber entendido bien. Soy un asistente virtual (aún aprendiendo).
 
-Puedes decir cosas como:
-• "Ver servicios"
-• "Agendar cita"
-• "Cancelar mi cita"
+¿Podrías usar una de estas opciones para ayudarme?
+• "Quiero ver los servicios"
+• "Deseo agendar una cita"
+• "Necesito cancelar/reprogramar"
 
-¿En qué puedo ayudarte?`
+¡Gracias por la paciencia! 🙏`
 }

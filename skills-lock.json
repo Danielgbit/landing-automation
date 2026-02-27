@@ -11,6 +11,16 @@
       "sourceType": "github",
       "computedHash": "1ec2cade17fba2b4ec309942c2253bced00b1cc9e2809905766b8c5e2be62ac8"
     },
+    "marketing-psychology": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "computedHash": "4099d985cf1f5beb26072924cae1e2815295842db72f7861443329adb5d760ce"
+    },
+    "n8n-workflow-patterns": {
+      "source": "czlonkowski/n8n-skills",
+      "sourceType": "github",
+      "computedHash": "52998bacfadee37835bfa434d08a23c76fa04092f757660708fe014c3594877c"
+    },
     "seo-audit": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
